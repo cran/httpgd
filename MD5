@@ -1,7 +1,7 @@
-3760520bc7b80f1aa169d081f91be76c *DESCRIPTION
+f10768a4cb0f91684c3f2fe8f39b1b05 *DESCRIPTION
 48f28d96da9e0aff992f5ec30684f04c *LICENSE.note
 e225a2574b828ea49ab9a7adff97e66c *NAMESPACE
-4b70f88f3020a1aefb87ecc07f0d863a *NEWS.md
+bf974b0e1ed37d6caa8c28103af48852 *NEWS.md
 6c94e39af8e628f07e0cc9944b420433 *R/cpp11.R
 7cf0f4c93121d2bf5b07df5e6da6bbae *R/fonts.R
 b820ab95dacd67129154428adb1923fd *R/httpgd-package.R
@@ -49,7 +49,7 @@ a3ab232d59c344cb492cd2fb9a984859 *src/Makevars
 75b8dbef85f88c5e4ef3845b39223e1d *src/PlotHistory.cpp
 a00de64080abfc735d6435aaad6afe0f *src/PlotHistory.h
 05bd17bfdd31d6cc80dae79684c87c5d *src/cpp11.cpp
-5da85c1dc4986e31904922019267430d *src/devGeneric.cpp
+aa4da309e0b87957b4bf4c298fede544 *src/devGeneric.cpp
 98f76fd4ea3ef38750a0da1f48cb4f42 *src/devGeneric.h
 7dbc16998eb2942d9446ceb9d3df6584 *src/lib/Rcpp.h
 5495cd41930cd30417a1e9d5ca88101d *src/lib/belle.h
@@ -57,7 +57,7 @@ ed1b08bb2288d7c4afef475954ecfb46 *src/lib/fmt/core.h
 532fad56850b7682ede26d66b09c2f1b *src/lib/fmt/format-inl.h
 0ec7440c8b8f4c3880c58fac8cebde7c *src/lib/fmt/format.h
 67dc432e25c45631eb169ccf812dabea *src/lib/fmt/ostream.h
-e1ec0ff84daba3b007873fccf526384d *src/lib/svglite_utils.h
+f2e93dcde13a92bd32bda83de9891395 *src/lib/svglite_utils.h
 07c9b53f6f49f4626b1e146c40446d94 *tests/testthat.R
 89fb8941fbeae4c7f9bbb388cf8b4b1f *tests/testthat/helper-svglite.R
 47c5fb293026922bab238d8d14abf6ff *tests/testthat/test-history.R
@@ -65,7 +65,7 @@ d32d9553534a847c1683792a81810115 *tests/testthat/test-security.R
 ba604793d38d04be02e4c91f7c1d23f6 *tests/testthat/test-svg.R
 c857ace3a424f9d4265db96452e1694a *tests/testthat/test-svglite-clip.R
 358b99d32e4929ae48818153433b6036 *tests/testthat/test-svglite-colour.R
-a41b4db89e29dd9e66308a77280e9bf9 *tests/testthat/test-svglite-devSVG.R
+76500c864a8a972153c0f7c20462d79d *tests/testthat/test-svglite-devSVG.R
 ed427004b1831b5afd5a798bacc41063 *tests/testthat/test-svglite-lines.R
 b576c52c0149659e595ca707b13c7de0 *tests/testthat/test-svglite-output.R
 37e5613cd9c5ec3f5aa1b4624dc1c809 *tests/testthat/test-svglite-path.R
@@ -74,5 +74,5 @@ ae699303fb28d5b4142ebb47319e4706 *tests/testthat/test-svglite-raster.R
 93d88be8693e194b8d5403382a55aec6 *tests/testthat/test-svglite-rect.R
 43803f92a391a29640757c5ecb2721b7 *tests/testthat/test-svglite-scale.R
 ebcbc8609323bd10040550a94d1c4085 *tests/testthat/test-svglite-text-fonts.R
-83056fef0d01c7d06b219770a3f9a383 *tests/testthat/test-svglite-text.R
+3618ddebab2a4ac5499d965f356b3ca3 *tests/testthat/test-svglite-text.R
 b422a0be1d2a048b0997b821e938722a *tools/winlibs.R
