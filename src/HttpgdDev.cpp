@@ -1,18 +1,16 @@
 
-
-#include <cpp11/strings.hpp>
-#include <cpp11/list.hpp>
-#include <cpp11/as.hpp>
-#include <cpp11/function.hpp>
-#include <cpp11/doubles.hpp>
-#include <string>
-#include <random>
-#include <cmath>
-
 #include "HttpgdDev.h"
-
-#include "lib/svglite_utils.h"
 #include "DebugPrint.h"
+
+#include <cmath>
+#include <cpp11/as.hpp>
+#include <cpp11/doubles.hpp>
+#include <cpp11/function.hpp>
+#include <cpp11/list.hpp>
+#include <cpp11/strings.hpp>
+#include <svglite_utils.h>
+#include <random>
+#include <string>
 
 namespace httpgd
 {
@@ -54,6 +52,7 @@ namespace httpgd
 
         m_svr_config = std::make_shared<HttpgdServerConfig>(t_config);
         m_data_store = std::make_shared<HttpgdDataStore>();
+        m_data_store->extra_css(t_params.extra_css);
         m_api_async_watcher = std::make_shared<HttpgdApiAsync>(this, m_svr_config, m_data_store);
 
         // setup http server
@@ -76,9 +75,7 @@ namespace httpgd
         m_data_store->set_device_active(true);
         if (m_server && m_server_running)
         {
-            HttpgdState state = m_data_store->state();
-            state.active = true; // in case it has changed
-            m_server->broadcast_state(state);
+            m_server->broadcast_state_current();
         }
     }
     void HttpgdDev::dev_deactivate(pDevDesc dd)
@@ -89,15 +86,12 @@ namespace httpgd
         m_data_store->set_device_active(false);
         if (m_server && m_server_running)
         {
-            HttpgdState state = m_data_store->state();
-            state.active = false; // in case it has changed
-            m_server->broadcast_state(state);
+            m_server->broadcast_state_current();
         }
     }
 
     void HttpgdDev::dev_mode(int mode, pDevDesc dd)
     {
-        //Rcpp::Rcout << "MODE "<<mode<<"\n";
         if (m_target.is_void() || mode == 1)
             return;
 
@@ -136,9 +130,9 @@ namespace httpgd
             c = -c;
         }
 
-        std::pair<std::string, int> font = get_font_file(gc->fontfamily, gc->fontface, user_aliases);
+        FontSettings font = get_font_file(gc->fontfamily, gc->fontface, user_aliases);
 
-        int error = glyph_metrics(c, font.first.c_str(), font.second, gc->ps * gc->cex, 1e4, ascent, descent, width);
+        int error = glyph_metrics(c, font.file, font.index, gc->ps * gc->cex, 1e4, ascent, descent, width);
         if (error != 0)
         {
             *ascent = 0;
@@ -152,11 +146,11 @@ namespace httpgd
     }
     double HttpgdDev::dev_strWidth(const char *str, pGEcontext gc, pDevDesc dd)
     {
-        std::pair<std::string, int> font = get_font_file(gc->fontfamily, gc->fontface, user_aliases);
+        FontSettings font = get_font_file(gc->fontfamily, gc->fontface, user_aliases);
 
         double width = 0.0;
 
-        int error = string_width(str, font.first.c_str(), font.second, gc->ps * gc->cex, 1e4, 1, &width);
+        int error = string_width(str, font.file, font.index, gc->ps * gc->cex, 1e4, 1, &width);
 
         if (error != 0)
         {
@@ -169,8 +163,10 @@ namespace httpgd
     void HttpgdDev::dev_clip(double x0, double x1, double y0, double y1, pDevDesc dd)
     {
         if (m_target.is_void())
+        {
             return;
-        m_data_store->clip(m_target.get_index(), x0, x1, y0, y1);
+        }
+        m_data_store->clip(m_target.get_index(), normalize_rect(x0, y0, x1, y1));
     }
     void HttpgdDev::dev_size(double *left, double *right, double *bottom, double *top, pDevDesc dd)
     {
@@ -181,11 +177,12 @@ namespace httpgd
      * Including the graphics headers and reading the values directly
      * is about 40 times faster, but is probably not allowed by CRAN.
      */
-    inline httpgd::HttpgdDataStorePageSize find_minsize(const pDevDesc &dd) {
-        auto par = cpp11::package("graphics")["par"];
-        auto mai = cpp11::as_cpp<cpp11::doubles>(cpp11::as_cpp<cpp11::list>(par())["mai"]);
-        double minw = (mai[1]+mai[3]) * 72 + 1;
-        double minh = (mai[0]+mai[2]) * 72 + 1;
+    inline vertex<double> find_minsize()
+    {
+        const auto par = cpp11::package("graphics")["par"];
+        const auto mai = cpp11::as_cpp<cpp11::doubles>(cpp11::as_cpp<cpp11::list>(par())["mai"]);
+        const double minw = (mai[1] + mai[3]) * 72 + 1;
+        const double minh = (mai[0] + mai[2]) * 72 + 1;
         return {minw, minh};
     }
 
@@ -194,12 +191,12 @@ namespace httpgd
         int index = (m_target.is_void()) ? m_target.get_newest_index() : m_target.get_index();
 
         auto size = m_data_store->size(index);
-        auto minsize = find_minsize(dd);
+        auto minsize = find_minsize();
 
         dd->left = 0.0;
         dd->top = 0.0;
-        dd->right = std::max(size.width, minsize.width);
-        dd->bottom = std::max(size.height, minsize.height);
+        dd->right = std::max(size.x, minsize.x);
+        dd->bottom = std::max(size.y, minsize.y);
     }
 
     void HttpgdDev::dev_newPage(pGEcontext gc, pDevDesc dd)
@@ -217,7 +214,7 @@ namespace httpgd
                 m_history.put_last(m_target.get_newest_index(), dd);
             }
             debug_print("    -> add new page to server\n");
-            m_target.set_index(m_data_store->append(width, height));
+            m_target.set_index(m_data_store->append({width, height}));
             m_target.set_newest_index(m_target.get_index());
         }
         else
@@ -230,57 +227,103 @@ namespace httpgd
         if (!m_target.is_void())
             m_data_store->fill(m_target.get_index(), fill);
     }
+
+    inline dc::LineInfo gc_lineinfo(pGEcontext gc)
+    {
+        return {
+            gc->col,
+            gc->lwd,
+            gc->lty,
+            static_cast<dc::LineInfo::GC_lineend>(gc->lend),
+            static_cast<dc::LineInfo::GC_linejoin>(gc->ljoin),
+            gc->lmitre};
+    }
+    inline color_t gc_fill(pGEcontext gc)
+    {
+        return gc->fill;
+    }
+
     void HttpgdDev::dev_line(double x1, double y1, double x2, double y2, pGEcontext gc, pDevDesc dd)
     {
-        put(std::make_shared<dc::Line>(gc, x1, y1, x2, y2));
+        put(std::make_shared<dc::Line>(gc_lineinfo(gc), vertex<double>{x1, y1}, vertex<double>{x2, y2}));
     }
     void HttpgdDev::dev_text(double x, double y, const char *str, double rot, double hadj, pGEcontext gc, pDevDesc dd)
     {
-        put(std::make_shared<dc::Text>(gc, x, y, str, rot, hadj,
+        FontSettings font_info = get_font_file(gc->fontfamily, gc->fontface, user_aliases);
+
+        int weight = get_font_weight(font_info.file, font_info.index);
+
+        std::string feature = "";
+        for (int i = 0; i < font_info.n_features; ++i)
+        {
+            feature += "'";
+            feature += font_info.features[i].feature[0];
+            feature += font_info.features[i].feature[1];
+            feature += font_info.features[i].feature[2];
+            feature += font_info.features[i].feature[3];
+            feature += "' ";
+            feature += font_info.features[i].setting;
+            feature += (i == font_info.n_features - 1 ? ";" : ",");
+        }
+
+        put(std::make_shared<dc::Text>(gc->col, vertex<double>{x, y}, str, rot, hadj,
                                        dc::TextInfo{
-                                           fontname(gc->fontfamily, gc->fontface, system_aliases, user_aliases),
+                                           weight,
+                                           feature,
+                                           fontname(gc->fontfamily, gc->fontface, system_aliases, user_aliases, font_info),
                                            gc->cex * gc->ps,
-                                           is_bold(gc->fontface),
                                            is_italic(gc->fontface),
                                            m_fix_strwidth ? dev_strWidth(str, gc, dd) : -1.0}));
     }
     void HttpgdDev::dev_rect(double x0, double y0, double x1, double y1, pGEcontext gc, pDevDesc dd)
     {
-        put(std::make_shared<dc::Rect>(gc, x0, y0, x1, y1));
+        put(std::make_shared<dc::Rect>(gc_lineinfo(gc), gc_fill(gc), normalize_rect(x0, y0, x1, y1)));
     }
     void HttpgdDev::dev_circle(double x, double y, double r, pGEcontext gc, pDevDesc dd)
     {
-        put(std::make_shared<dc::Circle>(gc, x, y, r));
+        put(std::make_shared<dc::Circle>(gc_lineinfo(gc), gc_fill(gc), vertex<double>{x, y}, r));
     }
     void HttpgdDev::dev_polygon(int n, double *x, double *y, pGEcontext gc, pDevDesc dd)
     {
-        std::vector<double> vx(x, x + n);
-        std::vector<double> vy(y, y + n);
-        put(std::make_shared<dc::Polygon>(gc, n, vx, vy));
+        std::vector<vertex<double>> points(n);
+        for (int i = 0; i < n; ++i)
+        {
+            points[i] = {x[i], y[i]};
+        }
+        put(std::make_shared<dc::Polygon>(gc_lineinfo(gc), gc_fill(gc), std::move(points)));
     }
     void HttpgdDev::dev_polyline(int n, double *x, double *y, pGEcontext gc, pDevDesc dd)
     {
-        std::vector<double> vx(x, x + n);
-        std::vector<double> vy(y, y + n);
-        put(std::make_shared<dc::Polyline>(gc, n, vx, vy));
+        std::vector<vertex<double>> points(n);
+        for (int i = 0; i < n; ++i)
+        {
+            points[i] = {x[i], y[i]};
+        }
+        put(std::make_shared<dc::Polyline>(gc_lineinfo(gc), std::move(points)));
     }
     void HttpgdDev::dev_path(double *x, double *y, int npoly, int *nper, Rboolean winding, pGEcontext gc, pDevDesc dd)
     {
         std::vector<int> vnper(nper, nper + npoly);
         int npoints = 0;
-        for (int i = 0; i < npoly; i++)
+        for (const auto &val : vnper)
         {
-            npoints += vnper[i];
+            npoints += val;
         }
-        std::vector<double> vx(x, x + npoints);
-        std::vector<double> vy(y, y + npoints);
+        std::vector<vertex<double>> points(npoints);
+        for (int i = 0; i < npoints; ++i)
+        {
+            points[i] = {x[i], y[i]};
+        }
 
-        put(std::make_shared<dc::Path>(gc, vx, vy, npoly, vnper, winding));
+        put(std::make_shared<dc::Path>(gc_lineinfo(gc), gc_fill(gc), std::move(points), std::move(vnper), winding));
     }
     void HttpgdDev::dev_raster(unsigned int *raster, int w, int h, double x, double y, double width, double height, double rot, Rboolean interpolate, pGEcontext gc, pDevDesc dd)
     {
-        std::vector<unsigned int> raster_(raster, raster + (w * h));
-        put(std::make_shared<dc::Raster>(gc, raster_, w, h, x, y, width, height, rot, interpolate));
+        const double abs_height = std::abs(height);
+        const double abs_width = std::abs(width);
+
+        std::vector<unsigned int> vraster(raster, raster + (w * h));
+        put(std::make_shared<dc::Raster>(std::move(vraster), vertex<int>{w, h}, rect<double>{x, y - abs_height, abs_width, abs_height}, rot, interpolate));
     }
 
     // OTHER
@@ -303,10 +346,10 @@ namespace httpgd
         debug_print("[render_page] index=%i\n", index);
 
         replaying = true;
-        m_data_store->resize(index, width, height); // this also clears
+        m_data_store->resize(index, {width, height}); // this also clears
         if (index == m_target.get_newest_index())
         {
-            m_target.set_index(index); 
+            m_target.set_index(index);
             debug_print("    -> open page. target_index=%i\n", m_target.get_index());
             resize_device_to_page(dd);
             PlotHistory::replay_current(dd); // replay active page
@@ -368,16 +411,21 @@ namespace httpgd
         return r;
     }
 
-    void HttpgdDev::api_svg(std::ostream &os, int index, double width, double height)
+    std::string HttpgdDev::api_svg(int index, double width, double height)
     {
         debug_print("DIFF \n");
-        if (m_data_store->diff(index, width, height))
+        if (m_data_store->diff(index, {width, height}))
         {
             debug_print("RENDER \n");
             api_render(index, width, height);
         }
         debug_print("SVG \n");
-        m_data_store->svg(os, index);
+        return m_data_store->svg(index);
+    }
+
+    boost::optional<int> HttpgdDev::api_index(int32_t id)
+    {
+        return m_data_store->find_index(id);
     }
 
     bool HttpgdDev::server_start()
@@ -406,42 +454,26 @@ namespace httpgd
         return m_svr_config;
     }
 
-    /*int HttpgdDev::api_upid()
-    {
-        return m_data_store->upid();
-    }
-    bool HttpgdDev::api_active()
-    {
-        return m_data_store->device_active();
-    }
-    int HttpgdDev::api_page_count()
-    {
-        return m_data_store->count();
-    }*/
     HttpgdState HttpgdDev::api_state()
     {
         return m_data_store->state();
     }
 
-    // Security vulnerability: Seed can not be chosen if R's RNG is used
-    // Generate random alphanumeric string with R's built in RNG
-    // https://cran.rstudio.com/doc/manuals/r-devel/R-exts.html#Random-numbers
-    /*std::string HttpgdDev::random_token(int len)
+    HttpgdQueryResults HttpgdDev::api_query_all()
     {
-        static const char alphanum[] =
-            "0123456789"
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            "abcdefghijklmnopqrstuvwxyz";
-        std::string s(len, 'a');
-        GetRNGstate();
-        for (int i = 0; i < len; i++)
-        {
-            s[i] = alphanum[(int)(unif_rand() * (sizeof(alphanum) / sizeof(*alphanum) - 1))];
-        }
-        PutRNGstate();
-        return s;
-    }*/
+        return m_data_store->query_all();
+    }
+    HttpgdQueryResults HttpgdDev::api_query_index(int index)
+    {
+        return m_data_store->query_index(index);
+    }
+    HttpgdQueryResults HttpgdDev::api_query_range(int offset, int limit)
+    {
+        return m_data_store->query_range(offset, limit);
+    }
 
+    // Can not use R's RNG for this for security reasons.
+    // (Seed could be predicted)
     std::string HttpgdDev::random_token(int len)
     {
         static const char alphanum[] =

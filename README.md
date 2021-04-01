@@ -2,6 +2,8 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/nx10/httpgd/workflows/R-CMD-check/badge.svg)](https://github.com/nx10/httpgd/actions)
+[![CRAN](https://www.r-pkg.org/badges/version/httpgd)](https://CRAN.R-project.org/package=httpgd)
+![downloads](https://cranlogs.r-pkg.org/badges/grand-total/httpgd)
 <!-- badges: end -->
 
 A graphics device for R that is accessible via network protocols.
@@ -12,18 +14,29 @@ The device asynchronously serves SVG graphics via HTTP and WebSockets.
 
 ## Features
 
-* Fast high quality SVG plots
-* Stateless asynchronous HTTP/WebSocket API
-* Plot resizing
-* Plot history
-* HTML/JavaScript client (TypeScript module)
+* Fast SVG plots
+* Plot resizing and history
+* Interactive plot viewer (client)
+* Platform independent
 * Multiple concurrent clients
+* For developers:
+  * HTML/JavaScript client (TypeScript module)
+  * Stateless asynchronous HTTP/WebSocket API
+  
 
 ## Demo
 
-![demo](https://user-images.githubusercontent.com/33600480/83944385-6587fa80-a803-11ea-8f4a-7808d144309d.gif)
+![demo](https://user-images.githubusercontent.com/33600480/113182768-92eeda80-9253-11eb-9505-79de107024f7.gif)
 
 ## Installation
+
+Install `httpgd` from CRAN:
+
+```R
+install.packages("httpgd")
+```
+
+Or get the latest development version from GitHub:
 
 ```R
 devtools::install_github("nx10/httpgd")
@@ -73,81 +86,38 @@ dev.off()
 | Keys | Result |
 |:----:|--------|
 | <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> <kbd>&#8593;</kbd> <kbd>&#8595;</kbd> | Navigate plot history. |
-| <kbd>N</kbd> | Jump to the newest plot. |
-| <kbd>del</kbd> / <kbd>D</kbd> | Delete plot. |
 | <kbd>+</kbd> / <kbd>-</kbd> | Zoom in and out. |
 | <kbd>0</kbd> | Reset zoom level. |
+| <kbd>N</kbd> | Jump to the newest plot. |
+| <kbd>del</kbd> / <kbd>D</kbd> | Delete plot. |
+| <kbd>alt</kbd>+<kbd>D</kbd> | Clear all plots. |
 | <kbd>S</kbd> | Download plot as SVG. |
 | <kbd>P</kbd> | Download plot as PNG. |
 | <kbd>C</kbd> | Copy plot to clipboard (as PNG). |
-| <kbd>T</kbd> | Clear all plots. |
+| <kbd>H</kbd> | Toggle plot history (sidebar). |
 
 ### API &amp; Documentation
 
-`httpgd` can be accessed both from R and from HTTP:
+The API documentation can be found [here](https://github.com/nx10/httpgd/blob/master/docs/api-documentation.md), and is also available as a package vignette.
 
-* [R API](https://github.com/nx10/httpgd/blob/master/docs/RApi.md)
-* [Web API](https://github.com/nx10/httpgd/blob/master/docs/WebApi.md)
-
-Technical documentation for developers wanting to contribute can be found [here](https://github.com/nx10/httpgd/blob/master/docs/tecdoc.md).
+Technical documentation for developers wanting to contribute to `httpgd` can be found [here](https://github.com/nx10/httpgd/blob/master/docs/tecdoc.md).
 
 ## Benchmark
 
 There are currently no other network graphics devices for comparison, `httpgd` can be used in offline mode (with `hgd(webserver = FALSE)`) to compare it with conventional SVG graphics devices.
 
-The [benchmark from svglite](https://github.com/r-lib/svglite/blob/master/README.md) has the following results:
+![](https://user-images.githubusercontent.com/33600480/113184973-232e1f00-9256-11eb-9595-327ec28ba360.png)
 
-<details>
+This benchmark compares `httpgd` 1.1.0 with `svglite` 2.0.0.
 
-<summary>Code</summary>
-
-```R
-library(svglite)
-library(httpgd)
-set.seed(1234)
-x <- runif(1e3)
-y <- runif(1e3)
-tmp1 <- tempfile()
-tmp2 <- tempfile()
-tmp3 <- tempfile()
-svglite_test <- function() {
-  svglite(tmp1)
-  plot(x, y)
-  dev.off()
-}
-svg_test <- function() {
-  svg(tmp2, onefile = TRUE)
-  plot(x, y)
-  dev.off()
-}
-httpgd_test <- function() {
-  hgd(webserver = FALSE)
-  plot(x, y)
-  hgd_svg(file = tmp3)
-  dev.off()
-}
-ben <-
-  bench::mark(httpgd_test(), svglite_test(), svg_test(), iterations = 250)
-```
-
-[See full code](https://github.com/nx10/httpgd/blob/master/docs/benchmark.R)
-
-</details>
-
-|expression     |    min| median|  itr/sec| mem_alloc|    gc/sec| n_itr| n_gc| total_time|
-|:--------------|------:|------:|--------:|---------:|---------:|-----:|----:|----------:|
-|httpgd_test()  | 10.2ms| 10.8ms| 91.43165|     361KB| 0.7373520|   248|    2|      2.71s|
-|svglite_test() | 20.3ms| 21.4ms| 46.29561|     593KB| 0.5622948|   247|    3|      5.33s|
-|svg_test()     | 27.2ms| 28.3ms| 35.15964|     126KB| 0.1412034|   249|    1|      7.08s|
-
-*Package versions: `httpgd` (1.0.0 dev), `svglite` (1.2.3.2), `grDevices` (4.0.3)*
-
-<img src="https://raw.githubusercontent.com/nx10/httpgd/master/docs/bench_speed1.png" width="640"/> <img src="https://raw.githubusercontent.com/nx10/httpgd/master/docs/bench_size1.png" width="640"/>
+[See benchmark code](https://github.com/nx10/httpgd/blob/master/docs/benchmark.R)
 
 
 ## System requirements
 
-Depends on `R` version &geq; 4.0.
+Depends on `R` version &geq; 4.0 on windows, and R &geq; 3.2 on linux and macOS (a C++ compiler with basic C++17 support [is required](https://github.com/nx10/httpgd/issues/56)).
+
+Note that there is a rare bug in R versions < 4.1, that leads to [some plots disappearing when ggplot2 plots are resized and deleted in a specific way](https://github.com/nx10/httpgd/issues/50).
 
 `libpng` and X11 are required on unix like systems (e.g. Linux, macOS).
 
@@ -174,7 +144,7 @@ The various components of `httpgd` are written in C++, R and TypeScript. We welc
 
 Other areas in need of improvement are: Testing, documentation, net security and continuous integration.
 
-If you feel lost, the [technical documentation](https://github.com/nx10/httpgd/blob/master/docs/tecdoc.md) might help.
+If you feel lost, the [documentation](#api--documentation) might help.
 
 ## Links &amp; Articles
 

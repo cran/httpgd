@@ -87,31 +87,37 @@ namespace httpgd
         asynclater::awaitLater();
     }
 
-    void HttpgdApiAsync::api_svg(std::ostream &os, int index, double width, double height)
+    std::string HttpgdApiAsync::api_svg(int index, double width, double height)
     {
-        if (m_data_store->diff(index, width, height))
+        if (m_data_store->diff(index, {width, height}))
         {
             api_render(index, width, height); // use async render call
             // todo perform sync diff again and sync render svg
         }
-        m_data_store->svg(os, index);
+        return m_data_store->svg(index);
     }
 
-    /*int HttpgdApiAsync::api_upid()
+    boost::optional<int> HttpgdApiAsync::api_index(int32_t id)
     {
-        return m_data_store->upid();
+        return m_data_store->find_index(id);
     }
-    bool HttpgdApiAsync::api_active()
-    {
-        return m_data_store->device_active();
-    }
-    int HttpgdApiAsync::api_page_count()
-    {
-        return m_data_store->count();
-    }*/
+
     HttpgdState HttpgdApiAsync::api_state()
     {
         return m_data_store->state();
+    }
+    
+    HttpgdQueryResults HttpgdApiAsync::api_query_all()
+    {
+        return m_data_store->query_all();
+    }
+    HttpgdQueryResults HttpgdApiAsync::api_query_index(int index)
+    {
+        return m_data_store->query_index(index);
+    }
+    HttpgdQueryResults HttpgdApiAsync::api_query_range(int offset, int limit)
+    {
+        return m_data_store->query_range(offset, limit);
     }
 
     std::shared_ptr<HttpgdServerConfig> HttpgdApiAsync::api_server_config()

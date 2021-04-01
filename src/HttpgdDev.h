@@ -28,16 +28,17 @@ namespace httpgd
         double pointsize;
         cpp11::list aliases;
         bool fix_strwidth;
+        boost::optional<const std::string &> extra_css;
     };
 
     class DeviceTarget
     {
     public:
-        int get_index() const;
+        [[nodiscard]] int get_index() const;
         void set_index(int index);
-        int get_newest_index() const;
+        [[nodiscard]] int get_newest_index() const;
         void set_newest_index(int index);
-        bool is_void() const;
+        [[nodiscard]] bool is_void() const;
         void set_void();
 
     private:
@@ -68,11 +69,12 @@ namespace httpgd
         virtual void api_render(int index, double width, double height) override;
         virtual bool api_remove(int index) override;
         virtual bool api_clear() override;
-        //virtual int api_upid() override;
-        //virtual bool api_active() override;
-        //virtual int api_page_count() override;
         virtual HttpgdState api_state() override;
-        virtual void api_svg(std::ostream &os, int index, double width, double height) override;
+        HttpgdQueryResults api_query_all() override;
+        HttpgdQueryResults api_query_index(int index) override;
+        HttpgdQueryResults api_query_range(int offset, int limit) override;
+        virtual std::string api_svg(int index, double width, double height) override;
+        virtual boost::optional<int> api_index(int32_t id) override;
         virtual std::shared_ptr<HttpgdServerConfig> api_server_config() override;
 
         // static 

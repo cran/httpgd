@@ -1,7 +1,7 @@
 Package: httpgd
 Type: Package
 Title: A 'HTTP' Server Graphics Device
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: 
     c(
       person(given = "Florian", family = "Rupprecht", email = "floruppr@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1795-8624")),
@@ -28,17 +28,19 @@ Description: A graphics device for R that is accessible via network protocols.
     The included 'HTML/JavaScript' client (plot viewer) aims to provide a better overall user experience when dealing with R graphics.
     The device asynchronously serves 'SVG' graphics via 'HTTP' and 'WebSockets'.
 License: GPL (>= 2)
-Depends: R (>= 4.0.0)
-Imports: later (>= 1.1.0), systemfonts (>= 0.2.3)
+Depends: R (>= 3.2.0)
+Imports: later (>= 1.1.0), systemfonts (>= 1.0.0)
 LinkingTo: cpp11 (>= 0.2.4), BH (>= 1.75.0), later, systemfonts
-Suggests: testthat, xml2 (>= 1.0.0), fontquiver (>= 0.2.0)
+Suggests: testthat, xml2 (>= 1.0.0), fontquiver (>= 0.2.0), knitr,
+        rmarkdown
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 SystemRequirements: C++17, libpng
 URL: https://github.com/nx10/httpgd
 BugReports: https://github.com/nx10/httpgd/issues
+VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2021-01-20 19:09:20 UTC; floru
+Packaged: 2021-03-31 23:27:13 UTC; floru
 Author: Florian Rupprecht [aut, cre] (<https://orcid.org/0000-0002-1795-8624>),
   Kun Ren [ctb],
   Jeroen Ooms [ctb] (<https://orcid.org/0000-0002-4035-0289>),
@@ -58,4 +60,4 @@ Author: Florian Rupprecht [aut, cre] (<https://orcid.org/0000-0002-1795-8624>),
   Victor Zverovich [cph] (Author of included fmt library)
 Maintainer: Florian Rupprecht <floruppr@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-01-21 17:20:03 UTC
+Date/Publication: 2021-04-01 14:30:02 UTC

@@ -18,7 +18,8 @@ hgd(
   silent = FALSE,
   websockets = TRUE,
   webserver = TRUE,
-  fix_text_width = TRUE
+  fix_text_width = TRUE,
+  extra_css = ""
 )
 }
 \arguments{
@@ -77,6 +78,9 @@ beneficial for heavy post-processing that may change content or style of
 strings, but may lead to inconsistencies between strings and graphic
 elements that depend on the dimensions of the string (e.g. label borders
 and background).}
+
+\item{extra_css}{Extra CSS to be added to the SVG. This can be used
+to embed webfonts.}
 }
 \value{
 No return value, called to initialize graphics device.
@@ -98,7 +102,7 @@ hgd() # Initialize graphics device and start server
 hgd_browse() # Or copy the displayed link in the browser
 
 # Plot something
-x = seq(0, 3 * pi, by = 0.1)
+x <- seq(0, 3 * pi, by = 0.1)
 plot(x, sin(x), type = "l")
 
 dev.off() # alternatively: hgd_close()

@@ -25,9 +25,11 @@
 #ifndef HTTPGD_SVGLITE_UTILS_H
 #define HTTPGD_SVGLITE_UTILS_H
 
-#include <cpp11/list.hpp>
 #include <cpp11/as.hpp>
+#include <cpp11/list.hpp>
+#include <cstring>
 #include <systemfonts.h>
+
 #define R_NO_REMAP
 #include <R_ext/GraphicsEngine.h>
 
@@ -105,7 +107,7 @@ namespace httpgd
         return find_user_alias(family, user_aliases, face, "file");
     }
 
-    inline std::pair<std::string, int> get_font_file(const char *family, int face, cpp11::list user_aliases)
+    inline FontSettings get_font_file(const char *family, int face, cpp11::list user_aliases)
     {
         const char *fontfamily = family;
         if (is_symbol(face))
@@ -119,16 +121,14 @@ namespace httpgd
         std::string alias = fontfile(family, face, user_aliases);
         if (alias.size() > 0)
         {
-            return {alias, 0};
+            FontSettings result = {};
+            std::strncpy(result.file, alias.c_str(), PATH_MAX);
+            result.index = 0;
+            result.n_features = 0;
+            return result;
         }
 
-        char *path = new char[PATH_MAX + 1];
-        path[PATH_MAX] = '\0';
-        int index = locate_font(fontfamily, is_italic(face), is_bold(face), path, PATH_MAX);
-        std::pair<std::string, int> res{path, index};
-        delete[] path;
-
-        return res;
+        return locate_font_with_features(fontfamily, is_italic(face), is_bold(face));
     }
 
     inline std::string find_system_alias(std::string family,
@@ -146,7 +146,8 @@ namespace httpgd
 
     inline std::string fontname(const char *family_, int face,
                                 cpp11::list const &system_aliases,
-                                cpp11::list const &user_aliases)
+                                cpp11::list const &user_aliases, 
+                                FontSettings &font)
     {
         std::string family(family_);
         if (face == 5)
@@ -156,12 +157,22 @@ namespace httpgd
 
         std::string alias = find_system_alias(family, system_aliases);
         if (!alias.size())
+        {
             alias = find_user_alias(family, user_aliases, face, "name");
+        }
 
         if (alias.size())
+        {
             return alias;
-        else
-            return family;
+        }
+
+        const size_t MAX_FONT_FAMILY_LEN = 100;
+        char family_name[MAX_FONT_FAMILY_LEN];
+        if (get_font_family(font.file, font.index, family_name, MAX_FONT_FAMILY_LEN))
+        {
+            return std::string(family_name, strnlen(family_name, MAX_FONT_FAMILY_LEN));
+        }
+        return family;
     }
 
     // Raster image encoding
@@ -263,10 +274,12 @@ namespace httpgd
         png_infop info = png_create_info_struct(png);
         if (!info)
         {
+            png_destroy_write_struct(&png, (png_infopp)NULL);
             return "";
         }
         if (setjmp(png_jmpbuf(png)))
         {
+            png_destroy_write_struct(&png, &info);
             return "";
         }
         png_set_IHDR(
@@ -288,35 +301,34 @@ namespace httpgd
         png_set_rows(png, info, &rows[0]);
         png_set_write_fn(png, &buffer, png_memory_write, NULL);
         png_write_png(png, info, PNG_TRANSFORM_IDENTITY, NULL);
-
         png_destroy_write_struct(&png, &info);
 
         return base64_encode(buffer.data(), buffer.size());
     }
 
-    inline void write_xml_escaped(std::ostream &os, const std::string &text)
+    inline void write_xml_escaped(fmt::memory_buffer &os, const std::string &text)
     {
         for (const char &c : text)
         {
             switch (c)
             {
             case '&':
-                os << "&amp;";
+                fmt::format_to(os, "&amp;");
                 break;
             case '<':
-                os << "&lt;";
+                fmt::format_to(os, "&lt;");
                 break;
             case '>':
-                os << "&gt;";
+                fmt::format_to(os, "&gt;");
                 break;
             case '"':
-                os << "&quot;";
+                fmt::format_to(os, "&quot;");
                 break;
             case '\'':
-                os << "&apos;";
+                fmt::format_to(os, "&apos;");
                 break;
             default:
-                os << c;
+                fmt::format_to(os, "{}", c);
             }
         }
     }
