@@ -1,476 +1,625 @@
 <!DOCTYPE html>
+
 <html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Overview</title>
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<script type="text/javascript">
-window.onload = function() {
-  var imgs = document.getElementsByTagName('img'), i, img;
-  for (i = 0; i < imgs.length; i++) {
-    img = imgs[i];
-    // center an image if it is the only element of its parent
-    if (img.parentElement.childElementCount === 1)
-      img.parentElement.style.textAlign = 'center';
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>API documentation</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
   }
-};
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
 </script>
 
 
 
 
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
 
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 13px;
-}
-
-body {
-  max-width: 800px;
-  margin: auto;
-  padding: 1em;
-  line-height: 20px;
-}
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-}
-
-h1 {
-   font-size:2.2em;
-}
-
-h2 {
-   font-size:1.8em;
-}
-
-h3 {
-   font-size:1.4em;
-}
-
-h4 {
-   font-size:1.0em;
-}
-
-h5 {
-   font-size:0.9em;
-}
-
-h6 {
-   font-size:0.8em;
-}
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
-}
-
-pre, img {
-  max-width: 100%;
-}
-pre {
-  overflow-x: auto;
-}
-pre code {
-   display: block; padding: 0.5em;
-}
-
-code {
-  font-size: 92%;
-  border: 1px solid #ccc;
-}
-
-code[class] {
-  background-color: #F8F8F8;
-}
-
-table, td, th {
-  border: none;
-}
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
-}
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
-}
-
-@media print {
-   * {
-      background: transparent !important;
-      color: black !important;
-      filter:none !important;
-      -ms-filter: none !important;
-   }
-
-   body {
-      font-size:12pt;
-      max-width:100%;
-   }
-
-   a, a:visited {
-      text-decoration: underline;
-   }
-
-   hr {
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote {
-      padding-right: 1em;
-      page-break-inside: avoid;
-   }
-
-   tr, img {
-      page-break-inside: avoid;
-   }
-
-   img {
-      max-width: 100% !important;
-   }
-
-   @page :left {
-      margin: 15mm 20mm 15mm 10mm;
-   }
-
-   @page :right {
-      margin: 15mm 10mm 15mm 20mm;
-   }
-
-   p, h2, h3 {
-      orphans: 3; widows: 3;
-   }
-
-   h2, h3 {
-      page-break-after: avoid;
-   }
-}
-</style>
 
 
 
 </head>
 
 <body>
+
+
+
+
+<h1 class="title toc-ignore">API documentation</h1>
+
+
+
 <!-- exact copy of: docs/api-documentation.md -->
-
 <p><a href="https://github.com/nx10/httpgd/blob/master/README.md">httpgd</a> can be accessed both from R and from HTTP/WebSockets.</p>
-
+<div id="overview" class="section level2">
 <h2>Overview</h2>
-
-<table><thead>
-<tr>
+<table>
+<thead>
+<tr class="header">
 <th>R</th>
 <th>HTTP</th>
 <th>Description</th>
 </tr>
-</thead><tbody>
-<tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td><code>hgd()</code></td>
 <td></td>
 <td>Initialize device and start server.</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>hgd_close()</code></td>
 <td></td>
 <td>Helper: Close device.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>hgd_url()</code></td>
 <td></td>
 <td>Helper: URL generation.</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>hgd_browse()</code></td>
 <td></td>
 <td>Helper: Open browser.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><a href="#get-state"><code>hgd_state()</code></a></td>
 <td><a href="#get-state"><code>/state</code></a></td>
 <td>Get current server state.</td>
 </tr>
-<tr>
-<td><a href="#render-svg"><code>hgd_svg()</code></a></td>
-<td><a href="#render-svg"><code>/svg</code></a></td>
-<td>Get rendered SVG.</td>
+<tr class="even">
+<td><a href="#get-renderers"><code>hgd_renderers()</code></a></td>
+<td><a href="#get-renderers"><code>/renderers</code></a></td>
+<td>Get list of available renderers.</td>
 </tr>
-<tr>
+<tr class="odd">
+<td><del><a href="#render-svg"><code>hgd_svg()</code></a></del></td>
+<td><del><a href="#render-svg"><code>/svg</code></a></del></td>
+<td>Get rendered SVG. (Deprecated)</td>
+</tr>
+<tr class="even">
+<td><a href="#render-plot"><code>hgd_plot()</code></a></td>
+<td><a href="#render-plot"><code>/plot</code></a></td>
+<td>Get rendered plot (any format).</td>
+</tr>
+<tr class="odd">
 <td><a href="#remove-plots"><code>hgd_clear()</code></a></td>
 <td><a href="#remove-plots"><code>/clear</code></a></td>
 <td>Remove all plots.</td>
 </tr>
-<tr>
+<tr class="even">
 <td><a href="#remove-plots"><code>hgd_remove()</code></a></td>
 <td><a href="#remove-plots"><code>/remove</code></a></td>
 <td>Remove a single plot.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><a href="#get-static-ids"><code>hgd_id()</code></a></td>
-<td><a href="#get-static-ids"><code>/plot</code></a></td>
+<td><a href="#get-static-ids"><code>/plots</code></a></td>
 <td>Get static plot IDs.</td>
 </tr>
-<tr>
+<tr class="even">
 <td></td>
 <td><code>/</code></td>
 <td>Welcome message.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td></td>
 <td><code>/live</code></td>
 <td>Live server page.</td>
 </tr>
-</tbody></table>
-
+</tbody>
+</table>
+</div>
+<div id="get-state" class="section level2">
 <h2>Get state</h2>
-
 <p>While all the APIs can be accessed stateless, the graphics device does have a state defined by.</p>
-
-<table><thead>
-<tr>
+<table>
+<colgroup>
+<col width="4%" />
+<col width="3%" />
+<col width="92%" />
+</colgroup>
+<thead>
+<tr class="header">
 <th>Field</th>
 <th>Type</th>
 <th>Description</th>
 </tr>
-</thead><tbody>
-<tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td><code>upid</code></td>
 <td><code>int</code></td>
 <td>Update id. Changes when plots are removed or when something is drawn.</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>hsize</code></td>
 <td><code>int</code></td>
 <td>Number of plots in the history.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>active</code></td>
 <td><code>bool</code></td>
 <td>Whether the graphics device is active. When another graphics device is activated, the device will become inactive and not be able to render any plots that are not cached (no resizes).</td>
 </tr>
-</tbody></table>
-
+</tbody>
+</table>
 <p>To receive state changes as they happen <a href="#from-websockets">WebSockets can be used</a>. Alternatively <code>/state</code> may be polled repeatedly.</p>
-
+<div id="from-r" class="section level3">
 <h3>From R</h3>
-
-<pre><code class="R">hgd_state()
-</code></pre>
-
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_state</span>()</span></code></pre></div>
 <p>Will respond with a list object including fields containing <code>host</code>, <code>port</code> and security <code>token</code> of the server.</p>
-
+</div>
+<div id="from-http" class="section level3">
 <h3>From HTTP</h3>
-
-<pre><code>/state
-</code></pre>
-
-<table><thead>
-<tr>
+<pre><code>/state</code></pre>
+<table>
+<colgroup>
+<col width="7%" />
+<col width="31%" />
+<col width="61%" />
+</colgroup>
+<thead>
+<tr class="header">
 <th>Key</th>
 <th>Value</th>
 <th>Default</th>
 </tr>
-</thead><tbody>
-<tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td><code>token</code></td>
 <td><a href="#security">Security token</a>.</td>
 <td>(The <code>X-HTTPGD-TOKEN</code> header can be set alternatively.)</td>
 </tr>
-</tbody></table>
-
+</tbody>
+</table>
 <p>Will respond with a JSON object.</p>
-
+</div>
+<div id="from-websockets" class="section level3">
 <h3>From WebSockets</h3>
-
-<p>httpgd accepts WebSocket connections on the same port as the HTTP server. <a href="#Server-state">Server state</a> changes will be broadcasted immediately to all connected clients in JSON format. </p>
-
-<h2>Render SVG</h2>
-
-<p>SVGs can be rendered from both R and HTTP. The actual plot construction in R is relatively slow so httpgd caches the plot in the last requested size. Subsequent calls with the same width and height or without a size specified will always be fast. (This way &ldquo;flipping&rdquo; through plot pages is very fast.)</p>
-
+<p>httpgd accepts WebSocket connections on the same port as the HTTP server. <a href="#Server-state">Server state</a> changes will be broadcasted immediately to all connected clients in JSON format.</p>
+</div>
+</div>
+<div id="get-renderers" class="section level2">
+<h2>Get Renderers</h2>
+<p>httpgd includes multiple renderers that can dynamically render plots to different target formats. As new formats may be added as the development on httpgd continues, and some depend on optional system dependencies, a list of available renderers can be obtained during runtime.</p>
+<p>The following is a complete list of renderers. Note that some may not yet be available in the release version of httpgd:</p>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="23%" />
+<col width="54%" />
+<col width="5%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>ID</th>
+<th>Mime-Type</th>
+<th>Renderer</th>
+<th>Format</th>
+<th>Depends</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>svg</code></td>
+<td><code>image/svg+xml</code></td>
+<td>Scalable Vector Graphics (SVG).</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>svgp</code></td>
+<td><code>image/svg+xml</code></td>
+<td>Version of the SVG renderer that produces portable SVGs.</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>json</code></td>
+<td><code>application/json</code></td>
+<td>Plot data serialized to JSON format.</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>png</code></td>
+<td><code>image/png</code></td>
+<td>Portable Network Graphics (PNG).</td>
+<td>binary</td>
+<td>Cairo</td>
+</tr>
+<tr class="odd">
+<td><code>pdf</code></td>
+<td><code>application/pdf</code></td>
+<td>Adobe Portable Document Format (PDF).</td>
+<td>binary</td>
+<td>Cairo</td>
+</tr>
+<tr class="even">
+<td><code>ps</code></td>
+<td><code>application/postscript</code></td>
+<td>PostScript (PS).</td>
+<td>string</td>
+<td>Cairo</td>
+</tr>
+<tr class="odd">
+<td><code>eps</code></td>
+<td><code>application/postscript</code></td>
+<td>Encapsulated PostScript (EPS).</td>
+<td>string</td>
+<td>Cairo</td>
+</tr>
+<tr class="even">
+<td><code>tikz</code></td>
+<td><code>text/plain</code></td>
+<td>LaTeX TikZ code.</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>strings</code></td>
+<td><code>text/plain</code></td>
+<td>List of plot strings.</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>meta</code></td>
+<td><code>application/json</code></td>
+<td>Plot meta information.</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="from-r-1" class="section level3">
 <h3>From R</h3>
-
-<p>Example:</p>
-
-<pre><code class="R">hgd_svg(page = 3, width = 800, height = 600) # Get plot at index 3 with 800*600
-hgd_svg() # Get last plot with cached size
-</code></pre>
-
-<p><code>page</code> can either be a number to indicate a plot index or a static plot ID (see: hgd_id()).</p>
-
-<p>This function returns the plot as a string. The <code>file</code> attribute can be used to save the SVG directly to disk.</p>
-
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_renderers</span>()</span></code></pre></div>
+<p>Will respond with a list object.</p>
+</div>
+<div id="from-http-1" class="section level3">
 <h3>From HTTP</h3>
-
-<p>Example:</p>
-
-<pre><code>/svg?index=2&amp;width=800&amp;height=600
-</code></pre>
-
-<p>Parameters:</p>
-
-<table><thead>
-<tr>
+<pre><code>/renderers</code></pre>
+<table>
+<colgroup>
+<col width="7%" />
+<col width="31%" />
+<col width="61%" />
+</colgroup>
+<thead>
+<tr class="header">
 <th>Key</th>
 <th>Value</th>
 <th>Default</th>
 </tr>
-</thead><tbody>
-<tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>token</code></td>
+<td><a href="#security">Security token</a>.</td>
+<td>(The <code>X-HTTPGD-TOKEN</code> header can be set alternatively.)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="render-plot" class="section level2">
+<h2>Render plot</h2>
+<p>Plots can be rendered in various file formats from both R and HTTP. The actual plot construction in R is relatively slow so httpgd caches the plot in the last requested size. Subsequent calls with the same width and height or without a size specified will always be fast. (This way “flipping” through plot pages is very fast.)</p>
+<div id="from-r-2" class="section level3">
+<h3>From R</h3>
+<p>Example:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_plot</span>(<span class="at">page =</span> <span class="dv">3</span>, <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>) <span class="co"># Get plot at index 3 with 800*600</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_plot</span>() <span class="co"># Get last plot with cached size</span></span></code></pre></div>
+<p><code>page</code> can either be a number to indicate a plot index or a static plot ID (see: hgd_id()).</p>
+<p>This function returns the plot as a string. The <code>file</code> attribute can be used to save the SVG directly to disk.</p>
+</div>
+<div id="from-http-2" class="section level3">
+<h3>From HTTP</h3>
+<p>Example:</p>
+<pre><code>/plot?index=2&amp;width=800&amp;height=600</code></pre>
+<p>Parameters:</p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="30%" />
+<col width="59%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Value</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td><code>width</code></td>
 <td>With in pixels.</td>
 <td>Last rendered width. (Initially device width.)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>height</code></td>
 <td>Height in pixels.</td>
 <td>Last rendered height. (Initially device height.)</td>
 </tr>
-<tr>
+<tr class="odd">
+<td><code>zoom</code></td>
+<td>Zoom level.</td>
+<td><code>1</code> (No zoom). <code>0.5</code> would be 50% and <code>2</code> 200%.</td>
+</tr>
+<tr class="even">
 <td><code>index</code></td>
 <td>Plot history index.</td>
 <td>Newest plot.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>id</code></td>
 <td>Static plot ID.</td>
 <td><code>index</code> will be used.</td>
 </tr>
-<tr>
+<tr class="even">
+<td><code>renderer</code></td>
+<td>Renderer.</td>
+<td><code>svg</code>.</td>
+</tr>
+<tr class="odd">
 <td><code>token</code></td>
 <td><a href="#security">Security token</a>.</td>
 <td>(The <code>X-HTTPGD-TOKEN</code> header can be set alternatively.)</td>
 </tr>
-</tbody></table>
-
+</tbody>
+</table>
 <blockquote>
 <p>Note that the HTTP API uses 0-based indexing and the R API 1-based indexing. This is done to conform to R and JavaScript on both ends. (This means the the first plot is accessed with <code>/svg?index=0</code> and <code>hgd_svg(page = 1)</code>.)</p>
 </blockquote>
-
+</div>
+</div>
+<div id="render-svg" class="section level2">
+<h2>Render SVG</h2>
+<blockquote>
+<p><strong>This API is deprecated and will be removed in the future.</strong></p>
+</blockquote>
+<p><code>hgd_svg()</code> and <code>/svg</code> are equivalent to <a href="#render-plot"><code>hgd_plot()</code></a> and <a href="#render-plot"><code>/plot</code></a> as the default renderer is SVG.</p>
+</div>
+<div id="remove-plots" class="section level2">
 <h2>Remove plots</h2>
-
+<div id="from-r-3" class="section level3">
 <h3>From R</h3>
-
 <p>Examples:</p>
-
-<pre><code class="R">hgd_remove(page = 2) # Remove the second page
-hgd_clear() # Clear all pages
-</code></pre>
-
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_remove</span>(<span class="at">page =</span> <span class="dv">2</span>) <span class="co"># Remove the second page</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_clear</span>() <span class="co"># Clear all pages</span></span></code></pre></div>
+</div>
+<div id="from-http-3" class="section level3">
 <h3>From HTTP</h3>
-
 <p>Examples:</p>
-
 <pre><code>/remove?index=2
-/clear
-</code></pre>
-
-<table><thead>
-<tr>
+/clear</code></pre>
+<table>
+<colgroup>
+<col width="7%" />
+<col width="31%" />
+<col width="61%" />
+</colgroup>
+<thead>
+<tr class="header">
 <th>Key</th>
 <th>Value</th>
 <th>Default</th>
 </tr>
-</thead><tbody>
-<tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td><code>index</code></td>
 <td>Plot history index.</td>
 <td>Newest plot.</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>id</code></td>
 <td>Static plot ID.</td>
 <td><code>index</code> will be used.</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>token</code></td>
 <td><a href="#security">Security token</a>.</td>
 <td>(The <code>X-HTTPGD-TOKEN</code> header can be set alternatively.)</td>
 </tr>
-</tbody></table>
-
+</tbody>
+</table>
+</div>
+</div>
+<div id="get-static-ids" class="section level2">
 <h2>Get static IDs</h2>
-
-<p>The problem with requesting individual plots by index is, that a plots index will change when earlier plots are removed from the plot history.
-To circumvent this, each plot also is assigned a static ID. </p>
-
+<p>The problem with requesting individual plots by index is, that a plots index will change when earlier plots are removed from the plot history. To circumvent this, each plot also is assigned a static ID.</p>
 <p>All APIs that access individual plots can also be called with static IDs instead of indices.</p>
-
+<div id="from-r-4" class="section level3">
 <h3>From R</h3>
-
 <p>Examples:</p>
-
-<pre><code class="R">hgd_id(index = 2) # Static ID of the second plot
-hgd_id() # Static ID of the last plot
-</code></pre>
-
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_id</span>(<span class="at">index =</span> <span class="dv">2</span>) <span class="co"># Static ID of the second plot</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_id</span>() <span class="co"># Static ID of the last plot</span></span></code></pre></div>
 <p>Note: The <code>limit</code> parameter can be adjusted to obtain multiple or all plot IDs.</p>
-
+</div>
+<div id="from-http-4" class="section level3">
 <h3>From HTTP</h3>
-
 <p>Examples:</p>
-
-<pre><code>/plot?index=2
-/plot
-</code></pre>
-
-<table><thead>
-<tr>
+<pre><code>/plots?index=2
+/plots</code></pre>
+<table>
+<colgroup>
+<col width="7%" />
+<col width="32%" />
+<col width="59%" />
+</colgroup>
+<thead>
+<tr class="header">
 <th>Key</th>
 <th>Value</th>
 <th>Default</th>
 </tr>
-</thead><tbody>
-<tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td><code>index</code></td>
 <td>Plot history index.</td>
 <td>Newest plot.</td>
 </tr>
-<tr>
+<tr class="even">
 <td><code>limit</code></td>
 <td>Number of subsequent plot IDs.</td>
 <td>1</td>
 </tr>
-<tr>
+<tr class="odd">
 <td><code>token</code></td>
 <td><a href="#security">Security token</a>.</td>
 <td>(The <code>X-HTTPGD-TOKEN</code> header can be set alternatively.)</td>
 </tr>
-</tbody></table>
-
-<p>Notes: </p>
-
+</tbody>
+</table>
+<p>Notes:</p>
 <ul>
 <li>The <code>limit</code> parameter can be specified to support pagination.</li>
 <li>The JSON response will contain the <a href="#get-state">state</a> to allow checking for desynchronisation.</li>
 </ul>
-
+</div>
+</div>
+<div id="security" class="section level2">
 <h2>Security</h2>
-
 <p>A security token can be set when starting the device:</p>
-
-<pre><code class="R">hgd(..., token = &quot;secret&quot;)
-</code></pre>
-
-<p>When set, each API request has to include this token inside the header <code>X-HTTPGD-TOKEN</code> or as a query param <code>?token=secret</code>.
-<code>token</code> is by default set to <code>TRUE</code> to generate a random 8 character alphanumeric token. If it is set to a number, a random token of that length will be generated. <code>FALSE</code> deactivates the security token.</p>
-
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd</span>(..., <span class="at">token =</span> <span class="st">&quot;secret&quot;</span>)</span></code></pre></div>
+<p>When set, each API request has to include this token inside the header <code>X-HTTPGD-TOKEN</code> or as a query param <code>?token=secret</code>. <code>token</code> is by default set to <code>TRUE</code> to generate a random 8 character alphanumeric token. If it is set to a number, a random token of that length will be generated. <code>FALSE</code> deactivates the security token.</p>
 <p>CORS is off by default but can be enabled on startup:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd</span>(..., <span class="at">cors =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
 
-<pre><code class="R">hgd(..., cors = TRUE)
-</code></pre>
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
-
 </html>

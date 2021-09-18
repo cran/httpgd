@@ -5,6 +5,7 @@
 #include <belle.h>
 #include "HttpgdApiAsync.h"
 #include <thread>
+#include "RendererManager.h"
 
 namespace httpgd
 {

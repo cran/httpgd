@@ -15,6 +15,7 @@ namespace httpgd
     class PlotChangedEventListener
     {
     public:
+        virtual ~PlotChangedEventListener() = default; 
         virtual void plot_changed(int upid) = 0;
     };
 
@@ -28,12 +29,13 @@ namespace httpgd
         virtual ~HttpgdApiAsync() = default; 
 
         // Calls that DO synchronize with R
-        void api_render(int index, double width, double height) override;
+        void api_prerender(int index, double width, double height) override;
         bool api_remove(int index) override;
         bool api_clear() override;
 
+
         // Calls that MAYBE synchronize with R
-        std::string api_svg(int index, double width, double height) override;
+        bool api_render(int index, double width, double height, dc::RenderingTarget *t_renderer, double t_scale) override;
         boost::optional<int> api_index(int32_t id) override;
         
         // Calls that DONT synchronize with R

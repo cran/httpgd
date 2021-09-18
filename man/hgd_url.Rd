@@ -10,7 +10,10 @@ hgd_url(
   websockets = TRUE,
   width = -1,
   height = -1,
-  history = TRUE
+  renderer = NA,
+  history = TRUE,
+  host = NULL,
+  port = NULL
 )
 }
 \arguments{
@@ -28,7 +31,13 @@ or a plot index or ID.)}
 \item{height}{Height of the plot. (Only used when \code{endpoint} is \code{"svg"},
 or a plot index or ID.)}
 
+\item{renderer}{Renderer.}
+
 \item{history}{Should the plot history sidebar be visible.}
+
+\item{host}{Replaces hostname.}
+
+\item{port}{Replaces port.}
 }
 \value{
 URL.

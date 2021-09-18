@@ -22,19 +22,20 @@ namespace httpgd
     public:
         boost::optional<page_index_t> find_index(page_id_t t_id);
 
-        bool diff(page_index_t t_index, vertex<double> t_size);
+        bool diff(page_index_t t_index, gvertex<double> t_size);
         std::string svg(page_index_t t_index);
+        bool render(page_index_t t_index, dc::RenderingTarget *t_renderer, double t_scale);
 
-        page_index_t append(vertex<double> t_size);
+        page_index_t append(gvertex<double> t_size);
         void clear(page_index_t t_index, bool t_silent);
         bool remove(page_index_t t_index, bool t_silent);
         bool remove_all();
-        void resize(page_index_t t_index, vertex<double> t_size);
-        vertex<double> size(page_index_t t_index);
+        void resize(page_index_t t_index, gvertex<double> t_size);
+        gvertex<double> size(page_index_t t_index);
 
         void fill(page_index_t t_index, color_t t_fill);
         void add_dc(page_index_t t_index, std::shared_ptr<dc::DrawCall> t_dc, bool t_silent);
-        void clip(page_index_t t_index, rect<double> t_rect);
+        void clip(page_index_t t_index, grect<double> t_rect);
 
         HttpgdState state();
         void set_device_active(bool t_active);
@@ -43,7 +44,7 @@ namespace httpgd
         HttpgdQueryResults query_index(page_index_t t_index);
         HttpgdQueryResults query_range(page_index_t t_offset, page_index_t t_limit);
 
-        void extra_css(boost::optional<const std::string &> t_extra_css);
+        void extra_css(boost::optional<std::string> t_extra_css);
 
     private:
         std::mutex m_store_mutex;
@@ -53,7 +54,7 @@ namespace httpgd
         int m_upid = 0;
         bool m_device_active = true;
 
-        boost::optional<const std::string &> m_extra_css;
+        boost::optional<std::string> m_extra_css;
 
         void m_inc_upid();
 

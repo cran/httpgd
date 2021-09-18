@@ -4,6 +4,7 @@
 #include <cpp11/list.hpp>
 #include <cpp11/integers.hpp>
 #include <cpp11/as.hpp>
+#include <cpp11/raws.hpp>
 
 //#include <R_ext/GraphicsEngine.h>
 
@@ -11,6 +12,8 @@
 #include <string>
 
 #include "HttpgdDev.h"
+#include "RendererSvg.h"
+#include "RendererManager.h"
 
 namespace httpgd
 {
@@ -46,7 +49,7 @@ bool httpgd_(std::string host, int port, std::string bg, double width, double he
 
     std::string wwwpath(httpgd::get_wwwpath(""));
 
-    boost::optional<const std::string &> css;
+    boost::optional<std::string> css;
     if (!extra_css.empty()) 
     {
         css = extra_css;
@@ -130,6 +133,41 @@ cpp11::list httpgd_state_(int devnum)
 }
 
 [[cpp11::register]]
+cpp11::list httpgd_renderers_(int devnum)
+{
+    
+    using namespace cpp11::literals;
+
+    const auto &renderers = httpgd::RendererManager::defaults();
+
+    cpp11::writable::list rens{static_cast<R_xlen_t>(renderers.size())};
+
+    R_xlen_t i = 0;
+    for (auto it = renderers.string_renderers().begin(); it != renderers.string_renderers().end(); it++) 
+    {
+        rens[i++] = cpp11::writable::list{
+                "id"_nm = it->second.id,
+                "mime"_nm = it->second.mime,
+                "ext"_nm = it->second.fileext,
+                "name"_nm = it->second.name,
+                "type"_nm = it->second.type,
+                "bin"_nm = false};
+    }
+    for (auto it = renderers.binary_renderers().begin(); it != renderers.binary_renderers().end(); it++) 
+    {
+        rens[i++] = cpp11::writable::list{
+                "id"_nm = it->second.id,
+                "mime"_nm = it->second.mime,
+                "ext"_nm = it->second.fileext,
+                "name"_nm = it->second.name,
+                "type"_nm = it->second.type,
+                "bin"_nm = true};
+    }
+
+    return rens;
+}
+
+[[cpp11::register]]
 std::string httpgd_random_token_(int len)
 {
     if (len < 0)
@@ -140,26 +178,70 @@ std::string httpgd_random_token_(int len)
 }
 
 [[cpp11::register]]
-std::string httpgd_svg_(int devnum, int page, double width, double height)
+bool httpgd_renderer_is_str_(std::string renderer_id)
 {
-    auto dev = validate_httpgddev(devnum);
-
-    return dev->api_svg(page, width, height);
+    return httpgd::RendererManager::defaults().find_string(renderer_id) ? true : false;
+}
+[[cpp11::register]]
+bool httpgd_renderer_is_raw_(std::string renderer_id)
+{
+    return httpgd::RendererManager::defaults().find_binary(renderer_id) ? true : false;
 }
 
 [[cpp11::register]]
-std::string httpgd_svg_id_(int devnum, std::string id, double width, double height)
+int httpgd_plot_find_(int devnum, std::string plot_id)
 {
-    long pid = validate_plotid(id);
-
+    long pid = validate_plotid(plot_id);
     auto dev = validate_httpgddev(devnum);
     auto page = dev->api_index(pid);
     if (!page)
     {
         cpp11::stop("Not a valid plot ID.");
     }
+    return *page;
+}
 
-    return dev->api_svg(*page, width, height);
+[[cpp11::register]]
+std::string httpgd_plot_str_(int devnum, int page, double width, double height, double zoom, std::string renderer_id)
+{
+    auto dev = validate_httpgddev(devnum);
+
+    if (width < 0 || height < 0)
+    {
+        zoom = 1;
+    }
+
+    auto fi_renderer = httpgd::RendererManager::defaults().find_string(renderer_id);
+    if (!fi_renderer)
+    {
+        cpp11::stop("Not a valid string renderer ID.");
+    }
+    auto renderer = (*fi_renderer).renderer();
+    dev->api_render(page, width / zoom, height / zoom, renderer.get(), zoom);
+    return renderer->get_string();
+}
+
+[[cpp11::register]]
+cpp11::raws httpgd_plot_raw_(int devnum, int page, double width, double height, double zoom, std::string renderer_id)
+{
+    auto dev = validate_httpgddev(devnum);
+
+    if (width < 0 || height < 0)
+    {
+        zoom = 1;
+    }
+
+    auto fi_renderer = httpgd::RendererManager::defaults().find_binary(renderer_id);
+    if (!fi_renderer)
+    {
+        cpp11::stop("Not a valid binary renderer ID.");
+    }
+    auto renderer = (*fi_renderer).renderer();
+    dev->api_render(page, width / zoom, height / zoom, renderer.get(), zoom);
+
+    auto bin = renderer->get_binary();
+    cpp11::writable::raws raw(bin.begin(), bin.end());
+    return raw;
 }
 
 [[cpp11::register]]

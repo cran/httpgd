@@ -73,21 +73,21 @@
 #' dev.off() # alternatively: hgd_close()
 #' }
 hgd <-
-  function(host = "127.0.0.1",
-           port = 0,
-           width = 720,
-           height = 576,
-           bg = "white",
-           pointsize = 12,
-           system_fonts = list(),
-           user_fonts = list(),
-           cors = FALSE,
-           token = TRUE,
-           silent = FALSE,
-           websockets = TRUE,
-           webserver = TRUE,
-           fix_text_width = TRUE,
-           extra_css = "") {
+  function(host = getOption("httpgd.host", "127.0.0.1"),
+           port = getOption("httpgd.port", 0),
+           width = getOption("httpgd.width", 720),
+           height = getOption("httpgd.height", 576),
+           bg = getOption("httpgd.bg", "white"),
+           pointsize = getOption("httpgd.pointsize", 12),
+           system_fonts = getOption("httpgd.system_fonts", list()),
+           user_fonts = getOption("httpgd.user_fonts", list()),
+           cors = getOption("httpgd.cors", FALSE),
+           token = getOption("httpgd.token", TRUE),
+           silent = getOption("httpgd.silent", FALSE),
+           websockets = getOption("httpgd.websockets", TRUE),
+           webserver = getOption("httpgd.webserver", TRUE),
+           fix_text_width = getOption("httpgd.fix_text_width", TRUE),
+           extra_css = getOption("httpgd.extra_css", "")) {
     tok <- ""
     if (is.character(token)) {
       tok <- token
@@ -104,11 +104,11 @@ hgd <-
       fix_text_width, extra_css
     )) {
       if (!silent && webserver) {
-        cat("httpgd server running at:\n  ",
-          hgd_url(websockets = websockets),
-          "\n",
-          sep = ""
-        )
+        cat("httpgd server running at:\n")
+        if (host == "0.0.0.0") {
+          cat("  ", hgd_url(websockets = websockets, host = "127.0.0.1"),"\n", sep="")
+        }
+        cat("  ", hgd_url(websockets = websockets), "\n", sep="")
       }
     } else {
       hgd_close()
@@ -150,6 +150,41 @@ hgd_state <- function(which = dev.cur()) {
   }
   else {
     return(httpgd_state_(which))
+  }
+}
+
+#' httpgd device renderers.
+#'
+#' Get a list of available renderers.
+#' This function will only work after starting a device with [hgd()].
+#'
+#' @param which Which device (ID).
+#'
+#' @return List of renderers with the following named items:
+#'   `$id`: Renderer ID,
+#'   `$mime`: File mime type,
+#'   `$ext`: File extension,
+#'   `$name`: Human readable name,
+#'   `$type`: Renderer type (currently either `plot` or `other`),
+#'   `$bin`: Is the file a binary blob or text.
+#'
+#' @importFrom grDevices dev.cur
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'
+#' hgd()
+#' hgd_renderers()
+#'
+#' dev.off()
+#' }
+hgd_renderers <- function(which = dev.cur()) {
+  if (names(which) != "httpgd") {
+    stop("Device is not of type httpgd")
+  }
+  else {
+    return(httpgd_renderers_(which))
   }
 }
 
@@ -219,6 +254,7 @@ hgd_id <- function(index = 0, limit = 1, which = dev.cur(), state = FALSE) {
 #'   be selected.
 #' @param height Height of the plot. If this is set to `-1`, the last height
 #'   will be selected.
+#' @param zoom Zoom level. (For example: `2` corresponds to 200%, `0.5` would be 50%.)
 #' @param which Which device (ID).
 #' @param file Filepath to save SVG. (No file will be created if this is NA)
 #'
@@ -238,22 +274,67 @@ hgd_id <- function(index = 0, limit = 1, which = dev.cur(), state = FALSE) {
 #'
 #' dev.off()
 #' }
-hgd_svg <- function(page = 0, width = -1, height = -1, which = dev.cur(),
+hgd_svg <- function(page = 0, width = -1, height = -1, zoom = 1, which = dev.cur(),
                     file = NA) {
+  hgd_plot(page = page, width = width, height = height, zoom = zoom, renderer = "svg", which = which, file = file)
+}
+
+#' Render httpgd plot.
+#'
+#' This function will only work after starting a device with [hgd()].
+#'
+#' @param page Plot page to render. If this is set to `0`, the last page will
+#'   be selected. Can be set to a numeric plot index or plot ID
+#'   (see [hgd_id()]).
+#' @param width Width of the plot. If this is set to `-1`, the last width will
+#'   be selected.
+#' @param height Height of the plot. If this is set to `-1`, the last height
+#'   will be selected.
+#' @param zoom Zoom level. (For example: `2` corresponds to 200%, `0.5` would be 50%.)
+#' @param renderer Renderer.
+#' @param which Which device (ID).
+#' @param file Filepath to save SVG. (No file will be created if this is NA)
+#'
+#' @return Rendered SVG string.
+#'
+#' @importFrom grDevices dev.cur
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'
+#' hgd()
+#' plot(1, 1)
+#' s <- hgd_svg(width = 600, height = 400)
+#' hist(rnorm(100))
+#' hgd_svg(file = tempfile(), width = 600, height = 400)
+#'
+#' dev.off()
+#' }
+hgd_plot <- function(page = 0, width = -1, height = -1, zoom = 1, renderer = "svg", 
+                     which = dev.cur(), file = NA) {
   if (names(which) != "httpgd") {
     stop("Device is not of type httpgd")
   }
-  else {
-    if (class(page) == "httpgd_pid") {
-      svg <- httpgd_svg_id_(which, page$id, width, height)
-    } else {
-      svg <- httpgd_svg_(which, page - 1, width, height)
-    }
+  if (class(page) == "httpgd_pid") {
+    page <- httpgd_plot_find_(which, page$id)
+  } 
+  if (httpgd_renderer_is_str_(renderer)) {
+    ret <- httpgd_plot_str_(which, page - 1, width, height, zoom, renderer)
     if (!is.na(file)) {
-      cat(svg, file = file)
+      cat(ret, file = file)
+      return()
     }
-    return(svg)
+  } else if (httpgd_renderer_is_raw_(renderer)) {
+    ret <- httpgd_plot_raw_(which, page - 1, width, height, zoom, renderer)
+    if (!is.na(file)) {
+      writeBin(ret, con = file)
+      return()
+    }
+  } else {
+    stop("Not a valid renderer ID.")
   }
+  return(ret)
 }
 
 #' Remove a httpgd plot page.
@@ -343,7 +424,10 @@ build_http_query <- function(x) {
 #'   or a plot index or ID.)
 #' @param height Height of the plot. (Only used when `endpoint` is `"svg"`,
 #'   or a plot index or ID.)
+#' @param renderer Renderer.
 #' @param history Should the plot history sidebar be visible.
+#' @param host Replaces hostname.
+#' @param port Replaces port.
 #'
 #' @return URL.
 #'
@@ -366,7 +450,10 @@ hgd_url <- function(
                     websockets = TRUE,
                     width = -1,
                     height = -1,
-                    history = TRUE) {
+                    renderer = NA,
+                    history = TRUE, 
+                    host = NULL, 
+                    port = NULL) {
   l <- hgd_state(which)
   q <- list()
   if (is.numeric(endpoint) || (class(endpoint) == "httpgd_pid")) {
@@ -379,13 +466,16 @@ hgd_url <- function(
     }
     endpoint <- "svg"
   }
-  if (endpoint == "svg") {
+  if (endpoint == "svg" || endpoint == "plot") {
     if (width > 0) {
       q["width"] <- width
     }
     if (height > 0) {
       q["height"] <- height
     }
+  }
+  if (!is.na(renderer)) {
+    q["renderer"] <- renderer
   }
   if (nchar(l$token) > 0) {
     q["token"] <- l$token
@@ -396,12 +486,17 @@ hgd_url <- function(
   if (!history) {
     q["sidebar"] <- "0"
   }
-  paste0(
-    "http://",
-    sub("0.0.0.0", Sys.info()[["nodename"]], l$host, fixed = TRUE),
-    ":",
+  if (!is.null(host)) {
+    l$host <- host
+  } else if (l$host == "0.0.0.0") {
+    l$host <- Sys.info()[["nodename"]]
+  }
+  if (!is.null(port)) {
+    l$port <- paste(port)
+  }
+  sprintf("http://%s:%s/%s%s",
+    l$host,
     l$port,
-    "/",
     endpoint,
     ifelse(length(q) == 0, "", paste0("?", build_http_query(q)))
   )
@@ -413,6 +508,7 @@ hgd_url <- function(
 #'
 #' @param ... Parameters passed to [hgd_url()].
 #' @param which Which device (ID).
+#' @param browser Program to be used as HTML browser.
 #'
 #' @return URL.
 #'
@@ -429,8 +525,11 @@ hgd_url <- function(
 #'
 #' dev.off()
 #' }
-hgd_browse <- function(..., which = dev.cur()) {
-  browseURL(hgd_url(..., which = which))
+hgd_browse <- function(..., which = dev.cur(), browser = NULL) {
+  if (is.null(browser)) {
+    browser <- getOption("browser")
+  }
+  browseURL(hgd_url(..., which = which), browser)
 }
 
 #' Close httpgd device.
@@ -503,6 +602,8 @@ hgd_generate_token <- function(len) {
 #'   will be selected.
 #' @param page_height Height of the plot. If this is set to `-1`, the last
 #'   height will be selected.
+#' @param zoom Zoom level. (For example: `2` corresponds to 200%, `0.5` would be 50%.)
+#' @param renderer Renderer.
 #' @param file Filepath to save SVG. (No file will be created if this is `NA`)
 #' @param ... Additional parameters passed to `hgd(webserver=FALSE, ...)`
 #'
@@ -519,12 +620,12 @@ hgd_generate_token <- function(len) {
 #'   lines(c(0.5, 1, 0.5), c(0.5, 1, 1))
 #' })
 #' cat(s)
-hgd_inline <- function(code, page = 0, page_width = -1, page_height = -1,
+hgd_inline <- function(code, page = 0, page_width = -1, page_height = -1, zoom = 1, renderer = "svg",
                        file = NA, ...) {
   hgd(webserver = FALSE, ...)
   tryCatch(code,
     finally = {
-      s <- hgd_svg(page = page, width = page_width, height = page_height)
+      s <- hgd_plot(page = page, width = page_width, height = page_height, zoom = zoom, renderer = renderer, file = file)
       dev.off()
     }
   )
