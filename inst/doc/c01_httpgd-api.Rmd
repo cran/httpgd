@@ -1,13 +1,11 @@
 ---
-title: "API documentation"
+title: "httpgd API"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{api-documentation}
+  %\VignetteIndexEntry{httpgd API}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-<!-- exact copy of: docs/api-documentation.md -->
 
 [httpgd](https://github.com/nx10/httpgd/blob/master/README.md) can be accessed both from R and from HTTP/WebSockets.
 

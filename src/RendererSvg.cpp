@@ -1,13 +1,12 @@
 #include "RendererSvg.h"
 
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
 #include <cmath>
 #include <fmt/ostream.h>
 #include <functional>
 
 #include "Base64.h"
+#include "HttpgdRng.h"
+#include "HttpgdCompress.h"
 
 namespace httpgd::dc
 {
@@ -540,8 +539,7 @@ namespace httpgd::dc
     
     void RendererSVGPortable::render(const Page &t_page, double t_scale) 
     {
-        boost::uuids::random_generator uuid_gen;
-        m_unique_id = boost::uuids::to_string(uuid_gen());
+        m_unique_id = httpgd::rng::uuid();
         m_scale = t_scale;
         this->page(t_page);
     }
@@ -776,6 +774,26 @@ namespace httpgd::dc
         fmt::format_to(os, " xlink:href=\"data:image/png;base64,");
         fmt::format_to(os, raster_base64(t_raster));
         fmt::format_to(os, "\"/></g>");
+    }
+
+    RendererSVGZ::RendererSVGZ(boost::optional<std::string> t_extra_css) :
+        RendererSVG(t_extra_css)
+    {
+    }
+    
+    std::vector<unsigned char> RendererSVGZ::get_binary() const 
+    {
+        return compr::compress_str(RendererSVG::get_string());
+    }
+    
+    RendererSVGZPortable::RendererSVGZPortable() :
+        RendererSVGPortable()
+    {
+    }
+    
+    std::vector<unsigned char> RendererSVGZPortable::get_binary() const 
+    {
+        return compr::compress_str(RendererSVGPortable::get_string());
     }
 
 } // namespace httpgd::dc

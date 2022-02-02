@@ -1,7 +1,7 @@
 Package: httpgd
 Type: Package
 Title: A 'HTTP' Server Graphics Device
-Version: 1.2.1
+Version: 1.3.0
 Authors@R: 
     c(
       person(given = "Florian", family = "Rupprecht", email = "floruppr@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1795-8624")),
@@ -36,11 +36,11 @@ Suggests: testthat, xml2 (>= 1.0.0), fontquiver (>= 0.2.0), knitr,
 RoxygenNote: 7.1.2
 Encoding: UTF-8
 SystemRequirements: C++17, libpng, cairo, freetype2, fontconfig
-URL: https://github.com/nx10/httpgd
+URL: https://github.com/nx10/httpgd, https://nx10.github.io/httpgd/
 BugReports: https://github.com/nx10/httpgd/issues
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2021-09-20 16:36:30 UTC; floru
+Packaged: 2022-02-02 17:10:33 UTC; floru
 Author: Florian Rupprecht [aut, cre] (<https://orcid.org/0000-0002-1795-8624>),
   Kun Ren [ctb],
   Jeroen Ooms [ctb] (<https://orcid.org/0000-0002-4035-0289>),
@@ -60,4 +60,4 @@ Author: Florian Rupprecht [aut, cre] (<https://orcid.org/0000-0002-1795-8624>),
   Victor Zverovich [cph] (Author of included fmt library)
 Maintainer: Florian Rupprecht <floruppr@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-09-20 18:30:02 UTC
+Date/Publication: 2022-02-02 17:40:02 UTC

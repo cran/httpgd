@@ -28,7 +28,18 @@ namespace httpgd
           ".svg",
           "SVG",
           "plot",
-          []() { return std::make_unique<dc::RendererSVG>(boost::none); }
+          []() { return std::make_unique<dc::RendererSVG>(boost::none); },
+          "Scalable Vector Graphics (SVG)."
+        });
+        
+        manager.add(BinaryRendererInfo{
+          "svgz",
+          "image/svg+xml",
+          ".svgz",
+          "SVGZ",
+          "plot",
+          []() { return std::make_unique<dc::RendererSVGZ>(boost::none); },
+          "Compressed Scalable Vector Graphics (SVGZ)."
         });
         
         manager.add({
@@ -37,7 +48,18 @@ namespace httpgd
           ".svg",
           "Portable SVG",
           "plot",
-          []() { return std::make_unique<dc::RendererSVGPortable>(); }
+          []() { return std::make_unique<dc::RendererSVGPortable>(); },
+          "Version of the SVG renderer that produces portable SVGs."
+        });
+        
+        manager.add(BinaryRendererInfo{
+          "svgzp",
+          "image/svg+xml",
+          ".svgz",
+          "Portable SVGZ",
+          "plot",
+          []() { return std::make_unique<dc::RendererSVGZPortable>(); },
+          "Version of the SVG renderer that produces portable SVGZs."
         });
         
 #ifndef HTTPGD_NO_CAIRO
@@ -48,7 +70,8 @@ namespace httpgd
           ".png",
           "PNG",
           "plot",
-          []() { return std::make_unique<dc::RendererCairoPng>(); }
+          []() { return std::make_unique<dc::RendererCairoPng>(); },
+          "Portable Network Graphics (PNG)."
         });
         
         manager.add({
@@ -57,7 +80,8 @@ namespace httpgd
           ".pdf",
           "PDF",
           "plot",
-          []() { return std::make_unique<dc::RendererCairoPdf>(); }
+          []() { return std::make_unique<dc::RendererCairoPdf>(); },
+          "Adobe Portable Document Format (PDF)."
         });
         
         manager.add({
@@ -66,7 +90,8 @@ namespace httpgd
           ".ps",
           "PS",
           "plot",
-          []() { return std::make_unique<dc::RendererCairoPs>(); }
+          []() { return std::make_unique<dc::RendererCairoPs>(); },
+          "PostScript (PS)."
         });
 
         manager.add({
@@ -75,7 +100,8 @@ namespace httpgd
           ".eps",
           "EPS",
           "plot",
-          []() { return std::make_unique<dc::RendererCairoEps>(); }
+          []() { return std::make_unique<dc::RendererCairoEps>(); },
+          "Encapsulated PostScript (EPS)."
         });
         
 #endif
@@ -86,7 +112,8 @@ namespace httpgd
           ".json",
           "JSON",
           "plot",
-          []() { return std::make_unique<dc::RendererJSON>(); }
+          []() { return std::make_unique<dc::RendererJSON>(); },
+          "Plot data serialized to JSON format."
         });
         
         manager.add({
@@ -95,7 +122,8 @@ namespace httpgd
           ".tex",
           "TikZ",
           "plot",
-          []() { return std::make_unique<dc::RendererTikZ>(); }
+          []() { return std::make_unique<dc::RendererTikZ>(); },
+          "LaTeX TikZ code."
         });
         
         manager.add({
@@ -104,7 +132,8 @@ namespace httpgd
           ".txt",
           "Strings",
           "data",
-          []() { return std::make_unique<dc::RendererStrings>(); }
+          []() { return std::make_unique<dc::RendererStrings>(); },
+          "List of strings contained in plot."
         });
         
         manager.add({
@@ -113,7 +142,8 @@ namespace httpgd
           ".json",
           "Meta",
           "data",
-          []() { return std::make_unique<dc::RendererMeta>(); }
+          []() { return std::make_unique<dc::RendererMeta>(); },
+          "Plot meta information."
         });
 
         return manager;
