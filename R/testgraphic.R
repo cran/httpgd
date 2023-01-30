@@ -2,13 +2,12 @@
 #' Plot a test pattern that can be used to evaluate and compare graphics
 #' devices.
 #'
+#' @return No return value.
+#'
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'
 #' hgd_test_pattern()
-#' }
 hgd_test_pattern <- function() {
   graphics::plot.new()
   graphics::plot.window(xlim = c(0, 100), ylim = c(0, 100))

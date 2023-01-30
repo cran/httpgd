@@ -7,13 +7,13 @@ devices.}
 \usage{
 hgd_test_pattern()
 }
+\value{
+No return value.
+}
 \description{
 Plot a test pattern that can be used to evaluate and compare graphics
 devices.
 }
 \examples{
-\dontrun{
-
 hgd_test_pattern()
-}
 }

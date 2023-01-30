@@ -19,7 +19,7 @@ value > 1 the returned type is a list if IDs.}
 (see also: \code{\link[=hgd_state]{hgd_state()}}).}
 }
 \value{
-TODO
+a list contains plot IDs.
 }
 \description{
 Query httpgd graphics device static plot IDs.
@@ -28,21 +28,17 @@ Available plot IDs starting from \code{index} will be returned.
 This function will only work after starting a device with \code{\link[=hgd]{hgd()}}.
 }
 \examples{
-\dontrun{
-
 hgd()
+
 plot.new()
 text(.5, .5, "#1")
 plot.new()
 text(.5, .5, "#2")
 plot.new()
 text(.5, .5, "#3")
-third <- hgd_id()
-second <- hgd_id(2)
-all <- hgd_id(1, limit = Inf)
-hgd_remove(1)
-hgd_svg(second)
+hgd_id() # The last one
+hgd_id(2) # The second one
+hgd_id(1, limit = Inf) # The first one and all the followings
 
 dev.off()
-}
 }
