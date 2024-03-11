@@ -341,9 +341,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <p>Install <code>httpgd</code> from CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;httpgd&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;httpgd&quot;</span>)</span></code></pre></div>
 <p>Or get the latest development version from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;nx10/httpgd&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;nx10/httpgd&quot;</span>)</span></code></pre></div>
 <p>See <a href="#System-requirements">system requirements</a> for
 troubleshooting.</p>
 <div id="system-requirements" class="section level2">
@@ -354,33 +354,8 @@ linux and macOS (a C++ compiler with basic C++17 support <a href="https://github
 <a href="https://github.com/nx10/httpgd/issues/50">some plots
 disappearing when ggplot2 plots are resized and deleted in a specific
 way</a>.</p>
-<p><code>libpng</code> and X11 are required on unix like systems
-(e.g. Linux, macOS). <code>Cairo</code> is required on unix like systems
-to enable PNG, PDF, EPS and PS renderers.</p>
-<div id="macos" class="section level3">
-<h3>macOS</h3>
-<p>If <code>libpng</code> is missing install it via:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install libpng</span></code></pre></div>
-<p>If <code>X11</code> is missing the error message will include the
-text:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unable</span> to load shared object [...] systemfonts/libs/systemfonts.so [...]</span></code></pre></div>
-<p>Install <a href="https://www.xquartz.org/"><code>XQuartz</code></a>.
-(see: <a href="https://github.com/r-lib/systemfonts/issues/17" class="uri">https://github.com/r-lib/systemfonts/issues/17</a>)</p>
-</div>
-<div id="linux" class="section level3">
-<h3>Linux</h3>
-<p>For source installation on Linux, the fontconfig freetype2 library is
-required to install the <code>{systemfonts}</code> package, which is a
-dependency of <code>httpgd</code>.</p>
-<div id="debian-ubuntu-etc." class="section level4">
-<h4>Debian, Ubuntu, etc.</h4>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> install libfontconfig1-dev</span></code></pre></div>
-</div>
-<div id="fedora-centos-rhel-etc." class="section level4">
-<h4>Fedora, CentOS, RHEL, etc.</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dnf</span> install fontconfig-devel</span></code></pre></div>
-</div>
-</div>
+<p>Also see the <a href="https://nx10.github.io/unigd/articles/a00_installation.html#system-requirements"><code>unigd</code>
+system requirements</a>.</p>
 </div>
 
 

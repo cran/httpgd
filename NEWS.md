@@ -1,9 +1,17 @@
-# httpgd 1.3.1
+# httpgd 2.0.1
 
-- Fix compilation with upcoming 'BH' 1.81.
-- Fix missing 'cstdint' include.
-- Fix rare rect clipping issue.
-- Minor fixes.
+- Fix compilation issues with 'clang 18' and 'libc++'.
+
+# httpgd 2.0.0
+
+- Split graphics rendering and R interface to seperate package 'unigd'.
+- Large refactoring and rewrite.
+- Numerous fixes and improvements in 'unigd' (see 'NEWS.md' there).
+- Migrate to crow web server library (due to belle being deprecated).
+- Add live reload feature.
+- Switched from 'Boost' to 'Asio'
+- Various library updates.
+- Various minor fixes and improvements.
 
 # httpgd 1.3.0
 

@@ -20,14 +20,12 @@ URL.
 This function will only work after starting a device with \code{\link[=hgd]{hgd()}}.
 }
 \examples{
-if (interactive()) {
-  hgd() # Initialize graphics device and start server
-  hgd_browse() # Or copy the displayed link in the browser
+\dontrun{
 
-  # Plot something
-  x <- seq(0, 3 * pi, by = 0.1)
-  plot(x, sin(x), type = "l")
+hgd()
+hgd_browse() # open browser
+hist(rnorm(100))
 
-  dev.off() # alternatively: hgd_close()
+dev.off()
 }
 }

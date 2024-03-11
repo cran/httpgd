@@ -1,9 +1,10 @@
-# `httpgd` <img src="man/figures/httpgd_logo.svg" align="right" height=250/>
+# `httpgd` <img src="man/figures/httpgd_logo.svg" align="right" width="25%"/>
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/nx10/httpgd/workflows/R-CMD-check/badge.svg)](https://github.com/nx10/httpgd/actions)
+[![R-CMD-check](https://github.com/nx10/httpgd/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/nx10/httpgd/actions/workflows/R-CMD-check.yaml)
 [![CRAN](https://www.r-pkg.org/badges/version/httpgd)](https://CRAN.R-project.org/package=httpgd)
 ![downloads](https://cranlogs.r-pkg.org/badges/grand-total/httpgd)
+[![Codecov test coverage](https://codecov.io/gh/nx10/httpgd/branch/master/graph/badge.svg)](https://app.codecov.io/gh/nx10/httpgd?branch=master)
 <!-- badges: end -->
 
 A graphics device for R that is accessible via network protocols.
@@ -15,16 +16,14 @@ The device asynchronously serves graphics via HTTP and WebSockets.
 ## Features
 
 * Fast plotting
-* Plot resizing and history
 * Interactive plot viewer (client)
-* Platform independent
-* Export to various image formats (SVG, PNG, PDF, EPS, ...)
-* Multiple concurrent clients
+* Supports multiple clients concurrently
+* Plot resizing and history
+* Export various image formats (SVG, PNG, PDF, EPS, ...)
+* Powered by [`unigd`](https://github.com/nx10/unigd)
 * For developers:
   * Stateless asynchronous HTTP/WebSocket API
-  * In-memory access to rendered plots
   * HTML/JavaScript client (TypeScript module)
-  
 
 ## Demo
 
@@ -51,17 +50,16 @@ See [system requirements](https://nx10.github.io/httpgd/articles/a00_installatio
 
 - For users:
   - [How to get started](https://nx10.github.io/httpgd/articles/a01_how-to-get-started.html)
+  - [Plotting in `unigd`](https://nx10.github.io/unigd/articles/b00_guide.html)
   - [Function reference](https://nx10.github.io/httpgd/reference/index.html)
   <!-- - [Benchmarks](https://nx10.github.io/httpgd/articles/c02_benchmarks.html) -->
   - IDEs &amp; evironments:
     - [VS Code](https://nx10.github.io/httpgd/articles/b01_vscode.html)
     - [RStudio](https://nx10.github.io/httpgd/articles/b02_rstudio.html)
     - [Docker](https://nx10.github.io/httpgd/articles/b03_docker.html)
-- For developers:
+- For package developers:
   - [httpgd API](https://nx10.github.io/httpgd/articles/c01_httpgd-api.html)
   <!-- - [Technical documentation](https://nx10.github.io/httpgd/articles/c03_technical-docs.html) -->
-
-
 
 
 ## Contributions welcome!
@@ -76,14 +74,12 @@ Other areas in need of improvement are testing and documentation.
 
 ## About &amp; License
 
-Depends on `cpp11`, `later` and `systemfonts`.
+Depends on `cpp11`.
 
-Webserver based on [`Boost/Beast`](<https://github.com/boostorg/beast>) included in the `BH` package.
+Webserver based on [`CrowCpp/Crow`](<https://github.com/CrowCpp/Crow>).
     
-Much of the font handling and SVG rendering code is modified code from the excellent [`svglite`](<https://github.com/r-lib/svglite>) package.
-
 This project is licensed GPL v2.0.
 
-It includes parts of [`svglite`](<https://github.com/r-lib/svglite>) (GPL &geq; 2), [`Belle`](https://github.com/octobanana/belle) (MIT) and [`fmt`](https://github.com/fmtlib/fmt) (MIT). The HTML client includes [Material Design icons by Google](https://github.com/google/material-design-icons) which are licensed under the [Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt).
+The HTML client includes [Material Design icons by Google](https://github.com/google/material-design-icons) which are licensed under the [Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt).
 
 Full copies of the license agreements used by these components are included in [`./inst/licenses`](https://github.com/nx10/httpgd/tree/master/inst/licenses).

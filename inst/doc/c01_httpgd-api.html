@@ -379,44 +379,34 @@ can be accessed both from R and from HTTP/WebSockets.</p>
 <td>Helper: Open browser.</td>
 </tr>
 <tr class="odd">
-<td><a href="#get-state"><code>hgd_state()</code></a></td>
+<td><a href="#get-state"><code>ugd_state()</code></a></td>
 <td><a href="#get-state"><code>/state</code></a></td>
 <td>Get current server state.</td>
 </tr>
 <tr class="even">
-<td><a href="#get-renderers"><code>hgd_renderers()</code></a></td>
+<td><a href="#get-renderers"><code>ugd_renderers()</code></a></td>
 <td><a href="#get-renderers"><code>/renderers</code></a></td>
 <td>Get list of available renderers.</td>
 </tr>
 <tr class="odd">
-<td><del><a href="#render-svg"><code>hgd_svg()</code></a></del></td>
-<td><del><a href="#render-svg"><code>/svg</code></a></del></td>
-<td>Get rendered SVG. (Deprecated)</td>
-</tr>
-<tr class="even">
-<td><a href="#render-plot"><code>hgd_plot()</code></a></td>
+<td><a href="#render-plot"><code>ugd_render()</code></a></td>
 <td><a href="#render-plot"><code>/plot</code></a></td>
 <td>Get rendered plot (any format).</td>
 </tr>
-<tr class="odd">
-<td><a href="#remove-plots"><code>hgd_clear()</code></a></td>
+<tr class="even">
+<td><a href="#remove-plots"><code>ugd_clear()</code></a></td>
 <td><a href="#remove-plots"><code>/clear</code></a></td>
 <td>Remove all plots.</td>
 </tr>
-<tr class="even">
-<td><a href="#remove-plots"><code>hgd_remove()</code></a></td>
+<tr class="odd">
+<td><a href="#remove-plots"><code>ugd_remove()</code></a></td>
 <td><a href="#remove-plots"><code>/remove</code></a></td>
 <td>Remove a single plot.</td>
 </tr>
-<tr class="odd">
-<td><a href="#get-static-ids"><code>hgd_id()</code></a></td>
+<tr class="even">
+<td><a href="#get-static-ids"><code>ugd_id()</code></a></td>
 <td><a href="#get-static-ids"><code>/plots</code></a></td>
 <td>Get static plot IDs.</td>
-</tr>
-<tr class="even">
-<td></td>
-<td><code>/</code></td>
-<td>Welcome message.</td>
 </tr>
 <tr class="odd">
 <td></td>
@@ -468,10 +458,11 @@ any plots that are not cached (no resizes).</td>
 <code>/state</code> may be polled repeatedly.</p>
 <div id="from-r" class="section level3">
 <h3>From R</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_state</span>()</span></code></pre></div>
-<p>Will respond with a list object including fields containing
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_state</span>()</span></code></pre></div>
+<p>Note: Prior to <code>httpgd 2.0</code> this function also returned
 <code>host</code>, <code>port</code> and security <code>token</code> of
-the server.</p>
+the server. These fields are now accessed via
+<code>hgd_details()</code>.</p>
 </div>
 <div id="from-http" class="section level3">
 <h3>From HTTP</h3>
@@ -517,98 +508,112 @@ runtime.</p>
 <p>The following is a complete list of renderers.</p>
 <table>
 <colgroup>
-<col width="8%" />
-<col width="23%" />
-<col width="54%" />
-<col width="5%" />
+<col width="12%" />
+<col width="24%" />
+<col width="56%" />
 <col width="6%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>ID</th>
-<th>Mime-Type</th>
-<th>Renderer</th>
-<th>Format</th>
-<th>Depends</th>
+<th align="left">ID</th>
+<th align="left">Mime-Type</th>
+<th align="left">Renderer</th>
+<th align="left">Format</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>svg</code></td>
-<td><code>image/svg+xml</code></td>
-<td>Scalable Vector Graphics (SVG).</td>
-<td>string</td>
-<td></td>
+<td align="left"><code>eps</code></td>
+<td align="left"><code>application/postscript</code></td>
+<td align="left">Encapsulated PostScript (EPS).</td>
+<td align="left">Text</td>
 </tr>
 <tr class="even">
-<td><code>svgp</code></td>
-<td><code>image/svg+xml</code></td>
-<td>Version of the SVG renderer that produces portable SVGs.</td>
-<td>string</td>
-<td></td>
+<td align="left"><code>json</code></td>
+<td align="left"><code>application/json</code></td>
+<td align="left">Plot data serialized to JSON format.</td>
+<td align="left">Text</td>
 </tr>
 <tr class="odd">
-<td><code>json</code></td>
-<td><code>application/json</code></td>
-<td>Plot data serialized to JSON format.</td>
-<td>string</td>
-<td></td>
+<td align="left"><code>meta</code></td>
+<td align="left"><code>application/json</code></td>
+<td align="left">Plot meta information.</td>
+<td align="left">Text</td>
 </tr>
 <tr class="even">
-<td><code>png</code></td>
-<td><code>image/png</code></td>
-<td>Portable Network Graphics (PNG).</td>
-<td>binary</td>
-<td>Cairo</td>
+<td align="left"><code>pdf</code></td>
+<td align="left"><code>application/pdf</code></td>
+<td align="left">Adobe Portable Document Format (PDF).</td>
+<td align="left">Binary</td>
 </tr>
 <tr class="odd">
-<td><code>pdf</code></td>
-<td><code>application/pdf</code></td>
-<td>Adobe Portable Document Format (PDF).</td>
-<td>binary</td>
-<td>Cairo</td>
+<td align="left"><code>png</code></td>
+<td align="left"><code>image/png</code></td>
+<td align="left">Portable Network Graphics (PNG).</td>
+<td align="left">Binary</td>
 </tr>
 <tr class="even">
-<td><code>ps</code></td>
-<td><code>application/postscript</code></td>
-<td>PostScript (PS).</td>
-<td>string</td>
-<td>Cairo</td>
+<td align="left"><code>png-base64</code></td>
+<td align="left"><code>text/plain</code></td>
+<td align="left">Base64 encoded Portable Network Graphics (PNG).</td>
+<td align="left">Text</td>
 </tr>
 <tr class="odd">
-<td><code>eps</code></td>
-<td><code>application/postscript</code></td>
-<td>Encapsulated PostScript (EPS).</td>
-<td>string</td>
-<td>Cairo</td>
+<td align="left"><code>ps</code></td>
+<td align="left"><code>application/postscript</code></td>
+<td align="left">PostScript (PS).</td>
+<td align="left">Text</td>
 </tr>
 <tr class="even">
-<td><code>tikz</code></td>
-<td><code>text/plain</code></td>
-<td>LaTeX TikZ code.</td>
-<td>string</td>
-<td></td>
+<td align="left"><code>strings</code></td>
+<td align="left"><code>text/plain</code></td>
+<td align="left">List of strings contained in plot.</td>
+<td align="left">Text</td>
 </tr>
 <tr class="odd">
-<td><code>strings</code></td>
-<td><code>text/plain</code></td>
-<td>List of plot strings.</td>
-<td>string</td>
-<td></td>
+<td align="left"><code>svg</code></td>
+<td align="left"><code>image/svg+xml</code></td>
+<td align="left">Scalable Vector Graphics (SVG).</td>
+<td align="left">Text</td>
 </tr>
 <tr class="even">
-<td><code>meta</code></td>
-<td><code>application/json</code></td>
-<td>Plot meta information.</td>
-<td>string</td>
-<td></td>
+<td align="left"><code>svgp</code></td>
+<td align="left"><code>image/svg+xml</code></td>
+<td align="left">Version of the SVG renderer that produces portable
+SVGs.</td>
+<td align="left">Text</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>svgz</code></td>
+<td align="left"><code>image/svg+xml</code></td>
+<td align="left">Compressed Scalable Vector Graphics (SVGZ).</td>
+<td align="left">Binary</td>
+</tr>
+<tr class="even">
+<td align="left"><code>svgzp</code></td>
+<td align="left"><code>image/svg+xml</code></td>
+<td align="left">Version of the SVG renderer that produces portable
+SVGZs.</td>
+<td align="left">Binary</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>tiff</code></td>
+<td align="left"><code>image/tiff</code></td>
+<td align="left">Tagged Image File Format (TIFF).</td>
+<td align="left">Binary</td>
+</tr>
+<tr class="even">
+<td align="left"><code>tikz</code></td>
+<td align="left"><code>text/plain</code></td>
+<td align="left">LaTeX TikZ code.</td>
+<td align="left">Text</td>
 </tr>
 </tbody>
 </table>
 <div id="from-r-1" class="section level3">
 <h3>From R</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_renderers</span>()</span></code></pre></div>
-<p>Will respond with a list object.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_renderers</span>()</span></code></pre></div>
+<p>Returns a data frame.</p>
 </div>
 <div id="from-http-1" class="section level3">
 <h3>From HTTP</h3>
@@ -647,8 +652,8 @@ way “flipping” through plot pages is very fast.)</p>
 <div id="from-r-2" class="section level3">
 <h3>From R</h3>
 <p>Example:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_plot</span>(<span class="at">page =</span> <span class="dv">3</span>, <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>) <span class="co"># Get plot at index 3 with 800*600</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_plot</span>() <span class="co"># Get last plot with cached size</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_render</span>(<span class="at">page =</span> <span class="dv">3</span>, <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>) <span class="co"># Get plot at index 3 with 800*600</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_render</span>() <span class="co"># Get last plot with cached size</span></span></code></pre></div>
 <p><code>page</code> can either be a number to indicate a plot index or
 a static plot ID (see: hgd_id()).</p>
 <p>This function returns the plot as a string. The <code>file</code>
@@ -716,26 +721,18 @@ alternatively.)</td>
 <p>Note that the HTTP API uses 0-based indexing and the R API 1-based
 indexing. This is done to conform to R and JavaScript on both ends.
 (This means the the first plot is accessed with
-<code>/svg?index=0</code> and <code>hgd_svg(page = 1)</code>.)</p>
+<code>/plot?index=0</code> and
+<code>unigd::ugd_render(page = 1)</code>.)</p>
 </blockquote>
 </div>
-</div>
-<div id="render-svg" class="section level2">
-<h2>Render SVG</h2>
-<blockquote>
-<p><strong>This API is deprecated and will be removed in the
-future.</strong></p>
-</blockquote>
-<p><code>hgd_svg()</code> and <code>/svg</code> are equivalent to <a href="#render-plot"><code>hgd_plot()</code></a> and <a href="#render-plot"><code>/plot</code></a> as the default renderer is
-SVG.</p>
 </div>
 <div id="remove-plots" class="section level2">
 <h2>Remove plots</h2>
 <div id="from-r-3" class="section level3">
 <h3>From R</h3>
 <p>Examples:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_remove</span>(<span class="at">page =</span> <span class="dv">2</span>) <span class="co"># Remove the second page</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_clear</span>() <span class="co"># Clear all pages</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_remove</span>(<span class="at">page =</span> <span class="dv">2</span>) <span class="co"># Remove the second page</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_clear</span>() <span class="co"># Clear all pages</span></span></code></pre></div>
 </div>
 <div id="from-http-3" class="section level3">
 <h3>From HTTP</h3>
@@ -786,8 +783,8 @@ IDs instead of indices.</p>
 <div id="from-r-4" class="section level3">
 <h3>From R</h3>
 <p>Examples:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_id</span>(<span class="at">index =</span> <span class="dv">2</span>) <span class="co"># Static ID of the second plot</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd_id</span>() <span class="co"># Static ID of the last plot</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_id</span>(<span class="at">index =</span> <span class="dv">2</span>) <span class="co"># Static ID of the second plot</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_id</span>() <span class="co"># Static ID of the last plot</span></span></code></pre></div>
 <p>Note: The <code>limit</code> parameter can be adjusted to obtain
 multiple or all plot IDs.</p>
 </div>
@@ -840,7 +837,7 @@ allow checking for desynchronisation.</li>
 <div id="security" class="section level2">
 <h2>Security</h2>
 <p>A security token can be set when starting the device:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd</span>(..., <span class="at">token =</span> <span class="st">&quot;secret&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">hgd</span>(..., <span class="at">token =</span> <span class="st">&quot;secret&quot;</span>)</span></code></pre></div>
 <p>When set, each API request has to include this token inside the
 header <code>X-HTTPGD-TOKEN</code> or as a query param
 <code>?token=secret</code>. <code>token</code> is by default set to
@@ -848,7 +845,7 @@ header <code>X-HTTPGD-TOKEN</code> or as a query param
 If it is set to a number, a random token of that length will be
 generated. <code>FALSE</code> deactivates the security token.</p>
 <p>CORS is off by default but can be enabled on startup:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hgd</span>(..., <span class="at">cors =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">hgd</span>(..., <span class="at">cors =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 
 
