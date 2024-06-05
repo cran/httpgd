@@ -1,7 +1,7 @@
-50191d8490ff74f15471170063fe32b5 *DESCRIPTION
+87f755bd4956da5378e2a706f90e7858 *DESCRIPTION
 48f28d96da9e0aff992f5ec30684f04c *LICENSE.note
 e8d731ac585ef602cd8a9a03684c19b4 *NAMESPACE
-eacf00e9abdbe2457df38cd75dcb744a *NEWS.md
+5456776d2760433e0b71b385b6cdedbc *NEWS.md
 0a4715cb1365f2ea271842c050b8703c *R/cpp11.R
 2c803a845dd72e2abafd8c626a86e40c *R/httpgd-package.R
 8ded81d672dcae2b602e727f73c542e8 *R/httpgd.R
@@ -63,7 +63,7 @@ d2c3aaa642877b638cac3644c0f29f86 *src/lib/crow/ci_map.h
 da0c4bd598629cc3f7cd7075abc0751c *src/lib/crow/common.h
 0f7502d775cbf9361efd09aecb39fc7b *src/lib/crow/compression.h
 60bace3b2b19403ac2c0a5272af8440d *src/lib/crow/http_connection.h
-f2a9135b5c1192507f8266396279f2f6 *src/lib/crow/http_parser_merged.h
+5451391f7be59d30792b30b1b2212f69 *src/lib/crow/http_parser_merged.h
 365007bab622ce166834dcb06f0eccb6 *src/lib/crow/http_request.h
 329b71871a320e46e9d73223ba71bcfa *src/lib/crow/http_response.h
 a707d9166d13442af7b7c65410069fed *src/lib/crow/http_server.h
