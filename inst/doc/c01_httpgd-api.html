@@ -60,7 +60,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,8 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<p><a href="https://github.com/nx10/httpgd/blob/master/README.md">httpgd</a>
-can be accessed both from R and from HTTP/WebSockets.</p>
+<p>httpgd provides an R API and an HTTP/WebSocket API.</p>
 <div id="overview" class="section level2">
 <h2>Overview</h2>
 <table style="width:100%;">
@@ -418,13 +417,12 @@ can be accessed both from R and from HTTP/WebSockets.</p>
 </div>
 <div id="get-state" class="section level2">
 <h2>Get state</h2>
-<p>While all the APIs can be accessed stateless, the graphics device
-does have a state defined by.</p>
+<p>The device state is defined by:</p>
 <table>
 <colgroup>
+<col width="6%" />
 <col width="4%" />
-<col width="3%" />
-<col width="92%" />
+<col width="88%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -437,8 +435,7 @@ does have a state defined by.</p>
 <tr class="odd">
 <td><code>upid</code></td>
 <td><code>int</code></td>
-<td>Update id. Changes when plots are removed or when something is
-drawn.</td>
+<td>Update ID. Changes when plots are added or removed.</td>
 </tr>
 <tr class="even">
 <td><code>hsize</code></td>
@@ -448,20 +445,18 @@ drawn.</td>
 <tr class="odd">
 <td><code>active</code></td>
 <td><code>bool</code></td>
-<td>Whether the graphics device is active. When another graphics device
-is activated, the device will become inactive and not be able to render
-any plots that are not cached (no resizes).</td>
+<td>Whether the device is currently active. Inactive devices cannot
+render uncached plots (e.g. at new sizes).</td>
 </tr>
 </tbody>
 </table>
-<p>To receive state changes as they happen <a href="#from-websockets">WebSockets can be used</a>. Alternatively
-<code>/state</code> may be polled repeatedly.</p>
+<p>State changes can be received in real time via <a href="#from-websockets">WebSockets</a>, or by polling
+<code>/state</code>.</p>
 <div id="from-r" class="section level3">
 <h3>From R</h3>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_state</span>()</span></code></pre></div>
-<p>Note: Prior to <code>httpgd 2.0</code> this function also returned
-<code>host</code>, <code>port</code> and security <code>token</code> of
-the server. These fields are now accessed via
+<p>Server connection details (<code>host</code>, <code>port</code>,
+<code>token</code>) are accessed separately via
 <code>hgd_details()</code>.</p>
 </div>
 <div id="from-http" class="section level3">
@@ -489,23 +484,18 @@ alternatively.)</td>
 </tr>
 </tbody>
 </table>
-<p>Will respond with a JSON object.</p>
 </div>
 <div id="from-websockets" class="section level3">
 <h3>From WebSockets</h3>
 <p>httpgd accepts WebSocket connections on the same port as the HTTP
-server. <a href="#Server-state">Server state</a> changes will be
-broadcasted immediately to all connected clients in JSON format.</p>
+server. State changes are broadcast to all connected clients as
+JSON.</p>
 </div>
 </div>
 <div id="get-renderers" class="section level2">
 <h2>Get Renderers</h2>
-<p>httpgd includes multiple renderers that can dynamically render plots
-to different target formats. As new formats may be added as the
-development on httpgd continues, and some depend on optional system
-dependencies, a list of available renderers can be obtained during
-runtime.</p>
-<p>The following is a complete list of renderers.</p>
+<p>httpgd can render plots to multiple formats. Available renderers
+depend on system dependencies and can be queried at runtime.</p>
 <table>
 <colgroup>
 <col width="12%" />
@@ -644,26 +634,20 @@ alternatively.)</td>
 </div>
 <div id="render-plot" class="section level2">
 <h2>Render plot</h2>
-<p>Plots can be rendered in various file formats from both R and HTTP.
-The actual plot construction in R is relatively slow so httpgd caches
-the plot in the last requested size. Subsequent calls with the same
-width and height or without a size specified will always be fast. (This
-way “flipping” through plot pages is very fast.)</p>
+<p>Plots can be rendered from both R and HTTP. httpgd caches the plot at
+the last requested size, so repeated calls with the same dimensions are
+fast.</p>
 <div id="from-r-2" class="section level3">
 <h3>From R</h3>
-<p>Example:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_render</span>(<span class="at">page =</span> <span class="dv">3</span>, <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>) <span class="co"># Get plot at index 3 with 800*600</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_render</span>() <span class="co"># Get last plot with cached size</span></span></code></pre></div>
-<p><code>page</code> can either be a number to indicate a plot index or
-a static plot ID (see: hgd_id()).</p>
-<p>This function returns the plot as a string. The <code>file</code>
-attribute can be used to save the SVG directly to disk.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_render</span>(<span class="at">page =</span> <span class="dv">3</span>, <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_render</span>() <span class="co"># last plot, cached size</span></span></code></pre></div>
+<p><code>page</code> accepts a plot index or a static plot ID (see
+<code>ugd_id()</code>). Returns the plot as a string; use the
+<code>file</code> parameter to save directly to disk.</p>
 </div>
 <div id="from-http-2" class="section level3">
 <h3>From HTTP</h3>
-<p>Example:</p>
 <pre><code>/plot?index=2&amp;width=800&amp;height=600</code></pre>
-<p>Parameters:</p>
 <table>
 <colgroup>
 <col width="10%" />
@@ -680,7 +664,7 @@ attribute can be used to save the SVG directly to disk.</p>
 <tbody>
 <tr class="odd">
 <td><code>width</code></td>
-<td>With in pixels.</td>
+<td>Width in pixels.</td>
 <td>Last rendered width. (Initially device width.)</td>
 </tr>
 <tr class="even">
@@ -717,26 +701,20 @@ alternatively.)</td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p>Note that the HTTP API uses 0-based indexing and the R API 1-based
-indexing. This is done to conform to R and JavaScript on both ends.
-(This means the the first plot is accessed with
-<code>/plot?index=0</code> and
-<code>unigd::ugd_render(page = 1)</code>.)</p>
-</blockquote>
+<p><strong>Note:</strong> The HTTP API uses 0-based indexing, the R API
+uses 1-based indexing. The first plot is <code>/plot?index=0</code> in
+HTTP and <code>ugd_render(page = 1)</code> in R.</p>
 </div>
 </div>
 <div id="remove-plots" class="section level2">
 <h2>Remove plots</h2>
 <div id="from-r-3" class="section level3">
 <h3>From R</h3>
-<p>Examples:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_remove</span>(<span class="at">page =</span> <span class="dv">2</span>) <span class="co"># Remove the second page</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_clear</span>() <span class="co"># Clear all pages</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_remove</span>(<span class="at">page =</span> <span class="dv">2</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_clear</span>()</span></code></pre></div>
 </div>
 <div id="from-http-3" class="section level3">
 <h3>From HTTP</h3>
-<p>Examples:</p>
 <pre><code>/remove?index=2
 /clear</code></pre>
 <table>
@@ -775,22 +753,18 @@ alternatively.)</td>
 </div>
 <div id="get-static-ids" class="section level2">
 <h2>Get static IDs</h2>
-<p>The problem with requesting individual plots by index is, that a
-plots index will change when earlier plots are removed from the plot
-history. To circumvent this, each plot also is assigned a static ID.</p>
-<p>All APIs that access individual plots can also be called with static
-IDs instead of indices.</p>
+<p>Plot indices shift when earlier plots are removed. Each plot is also
+assigned a static ID that remains stable. All APIs that access
+individual plots accept static IDs as an alternative to indices.</p>
 <div id="from-r-4" class="section level3">
 <h3>From R</h3>
-<p>Examples:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_id</span>(<span class="at">index =</span> <span class="dv">2</span>) <span class="co"># Static ID of the second plot</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_id</span>() <span class="co"># Static ID of the last plot</span></span></code></pre></div>
-<p>Note: The <code>limit</code> parameter can be adjusted to obtain
-multiple or all plot IDs.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_id</span>(<span class="at">index =</span> <span class="dv">2</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>unigd<span class="sc">::</span><span class="fu">ugd_id</span>()</span></code></pre></div>
+<p>Use the <code>limit</code> parameter to obtain multiple plot IDs at
+once.</p>
 </div>
 <div id="from-http-4" class="section level3">
 <h3>From HTTP</h3>
-<p>Examples:</p>
 <pre><code>/plots?index=2
 /plots</code></pre>
 <table>
@@ -825,27 +799,22 @@ alternatively.)</td>
 </tr>
 </tbody>
 </table>
-<p>Notes:</p>
-<ul>
-<li>The <code>limit</code> parameter can be specified to support
-pagination.</li>
-<li>The JSON response will contain the <a href="#get-state">state</a> to
-allow checking for desynchronisation.</li>
-</ul>
+<p>The <code>limit</code> parameter supports pagination. The JSON
+response includes the current <a href="#get-state">state</a> for
+synchronization checks.</p>
 </div>
 </div>
 <div id="security" class="section level2">
 <h2>Security</h2>
-<p>A security token can be set when starting the device:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">hgd</span>(..., <span class="at">token =</span> <span class="st">&quot;secret&quot;</span>)</span></code></pre></div>
-<p>When set, each API request has to include this token inside the
-header <code>X-HTTPGD-TOKEN</code> or as a query param
-<code>?token=secret</code>. <code>token</code> is by default set to
-<code>TRUE</code> to generate a random 8 character alphanumeric token.
-If it is set to a number, a random token of that length will be
-generated. <code>FALSE</code> deactivates the security token.</p>
-<p>CORS is off by default but can be enabled on startup:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">hgd</span>(..., <span class="at">cors =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>By default, <code>hgd()</code> generates a random 8-character
+alphanumeric token. Every API request must include this token as a
+header (<code>X-HTTPGD-TOKEN</code>) or query parameter
+(<code>?token=...</code>).</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">hgd</span>(<span class="at">token =</span> <span class="st">&quot;secret&quot;</span>)  <span class="co"># fixed token</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">hgd</span>(<span class="at">token =</span> <span class="dv">16</span>)        <span class="co"># random token of length 16</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">hgd</span>(<span class="at">token =</span> <span class="cn">FALSE</span>)     <span class="co"># disable token</span></span></code></pre></div>
+<p>CORS is off by default but can be enabled:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">hgd</span>(<span class="at">cors =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 
 

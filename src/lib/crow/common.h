@@ -190,6 +190,7 @@ namespace crow
         FORBIDDEN                     = 403,
         NOT_FOUND                     = 404,
         METHOD_NOT_ALLOWED            = 405,
+        NOT_ACCEPTABLE                = 406,
         PROXY_AUTHENTICATION_REQUIRED = 407,
         CONFLICT                      = 409,
         GONE                          = 410,
@@ -232,21 +233,19 @@ namespace crow
 
         void debug_print() const
         {
-            /*
-            std::cerr << "routing_params" << std::endl;
-            for (auto i : int_params)
-                std::cerr << i << ", ";
-            std::cerr << std::endl;
-            for (auto i : uint_params)
-                std::cerr << i << ", ";
-            std::cerr << std::endl;
-            for (auto i : double_params)
-                std::cerr << i << ", ";
-            std::cerr << std::endl;
-            for (auto& i : string_params)
-                std::cerr << i << ", ";
-            std::cerr << std::endl;
-            */
+            // std::cerr << "routing_params" << std::endl;
+            // for (auto i : int_params)
+            //     std::cerr << i << ", ";
+            // std::cerr << std::endl;
+            // for (auto i : uint_params)
+            //     std::cerr << i << ", ";
+            // std::cerr << std::endl;
+            // for (auto i : double_params)
+            //     std::cerr << i << ", ";
+            // std::cerr << std::endl;
+            // for (auto& i : string_params)
+            //     std::cerr << i << ", ";
+            // std::cerr << std::endl;
         }
 
         template<typename T>

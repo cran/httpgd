@@ -1,3 +1,29 @@
+# httpgd 2.1.4
+
+- Address CRAN review feedback (documentation, code style).
+- Add R linting CI.
+
+# httpgd 2.1.3
+
+- Fix compilation failure with 'Clang 21' (middleware default constructor).
+- Add Clang 21 R CMD check to CI.
+
+# httpgd 2.1.2
+
+- Fix compilation failure with 'Clang 21' (vendored 'CrowCpp' tuple member initialization).
+
+# httpgd 2.1.1
+
+- Fix compilation failure with 'Clang 21' (vendored 'CrowCpp' CORS middleware default constructor).
+
+# httpgd 2.1.0
+
+- Update vendored 'CrowCpp' library to v1.2.1.
+- Update 'AsioHeaders' dependency to >= 1.28.2 (fixes macOS deprecation warnings).
+- Remove unused code causing compiler warnings.
+- Modernize build system and CI/CD workflows.
+- Require R >= 4.2.0.
+
 # httpgd 2.0.4
 
 - Fix 'Clang 19' deprecation warning.

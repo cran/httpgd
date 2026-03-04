@@ -1,13 +1,13 @@
 #ifndef __UNIGD_HTTPGD_WEBSERVER_H__
 #define __UNIGD_HTTPGD_WEBSERVER_H__
 
-#include <crow.h>
-#include <crow/middlewares/cors.h>
-
 #include <memory>
 #include <mutex>
 #include <thread>
 #include <unordered_set>
+
+#include <crow.h>
+#include <crow/middlewares/cors.h>
 
 #include "unigd_impl.h"
 
@@ -41,6 +41,8 @@ class WebServer
 {
   struct TokenGuard : crow::ILocalMiddleware
   {
+    TokenGuard() = default;
+
     struct context
     {
     };
@@ -78,8 +80,6 @@ class WebServer
   HttpgdLogHandler m_log_handler;
   std::mutex m_mtx_update_subs;
   std::unordered_set<crow::websocket::connection*> m_update_subs;
-  int m_last_upid = -1;
-  bool m_last_active = true;
   std::thread m_server_thread;
 
   void run();
